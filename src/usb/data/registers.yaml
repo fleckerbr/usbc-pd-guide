@@ -1,0 +1,1801 @@
+"VENDOR_ID":
+  address: 0x00
+  bytes: 2
+  details: |
+    A Vendor ID, or [VID]([VENDOR_ID.VID]), is used to identify the TCPC vendor.
+    The [VID]([VENDOR_ID.VID]) is a unique 16-bit unsigned integer assigned by USB-IF.
+  permissions:
+    read: true
+    write: false
+  reset-value: "Vendor Defined"
+  fields:
+    - bit(s): "B15..0"
+      name: "Vendor ID"
+      identifier: "VID"
+      details: "A unique 16-bit unsigned integer assigned by the USB-IF to the Vendor."
+
+"PRODUCT_ID":
+  address: 0x02
+  bytes: 2
+  details: |
+    The Product ID, or [PID]([PRODUCT_ID.PID]), is used to identify the TCPC product.
+    Manufacturers should set the USB Product ID field to a unique value across all USB products from the vendor.
+  permissions:
+    read: true
+    write: false
+  reset-value: "Vendor Defined"
+  fields:
+    - bit(s): "B15..0"
+      name: "Product ID"
+      identifier: "PID"
+      details: "A unique 16-bit unsigned integer assigned uniquely by the Vendor to identify the TCPC."
+
+"DEVICE_ID":
+  address: 0x04
+  bytes: 2
+  details: |
+    The Device ID, [bcdDevice]([DEVICE_ID.bcdDevice]), is used to identify the release version of the product.
+    The [bcdDevice]([DEVICE_ID.bcdDevice]) field should reflect a version number relevant to the release version of the product.
+  permissions:
+    read: true
+    write: false
+  reset-value: "Vendor Defined"
+  fields:
+    - bit(s): "B15..0"
+      name: "bcd Device"
+      details: "A unique 16-bit unsigned integer assigned by the Vendor to identify the version of the TCPC."
+
+"USBTYPEC_REV":
+  address: 0x06
+  bytes: 2
+  details: |
+    This register refers to [USB TC] Cable and Connector Specification Revision, USB Type-C represented by a unique 16-bit unsigned register.
+    The format is packed binary coded decimal.
+  permissions:
+    read: true
+    write: false
+  reset-value: "Vendor Defined"
+  fields:
+    - bit(s): "B15..8"
+      reserved: true
+    - bit(s): "B7..0"
+      name: "bcd USB Type-C Release"
+      identifier: "bcdUSBTypeCRelease"
+      details: "Example: `0010 0001` - Release 2.1"
+
+"USBPD_REV_VER":
+  address: 0x08
+  bytes: 2
+  details: |
+    This register refers to USB PD Specification Revision and Version, USB PD represented by a unique 16-bit unsigned integer.
+    The format is packed binary coded decimal.
+  permissions:
+    read: true
+    write: false
+  reset-value: "Vendor Defined"
+  fields:
+    - bit(s): "B15..8"
+      name: "bcd USB PD Revision"
+      details: "Example: `0011 0001` - Revision 3.1"
+    - bit(s): "B7..0"
+      name: "bcd USB PD Version"
+      details: "Example: `0001 0000` - Version 1.0"
+
+"PD_INTERFACE_REV":
+  address: 0x0A
+  bytes: 2
+  details: |
+    The USB-Port Controller Specification Revision register refers to this Specification Revision and Version represented by a unique 16-bit unsigned integer.
+    The format is packed binary coded decimal.
+  permissions:
+    read: true
+    write: false
+  reset-value: "Vendor Defined"
+  fields:
+    - bit(s): "B15..8"
+      name: "bcd USB PD Interface Revision"
+      details: "Example: `0010 0000` - Revision 2.0"
+    - bit(s): "B7..0"
+      name: "bcd USB PD Interface Version"
+      details: "Example: `0001 0011` - Version 1.3"
+
+"ALERT":
+  address: 0x10
+  bytes: 2
+  details: |
+    This register is set by TCPC and cleared by TCPM.
+
+    This register is used to communicate a status change from the TCPC to the TCPM.
+    After an event or condition occurs, the TCPC shall set the corresponding bit in the [ALERT] register.
+    The TCPC shall keep the bit associated with the [ALERT] asserted until the TCPM writes a `1b` to clear it.
+
+    The TCPC indicates an alert status change has occurred by presenting a `1b` in the corresponding
+    alert bit position in this register and asserting the [Alert#] pin.
+    The TCPM clears the [ALERT] bit by writing a `1b` to the respective [ALERT] bit position.
+    The TCPM can clear any number of [ALERT] bits in a single write by setting multiple bits to
+    `1b` and the rest of the bits in the register to `0b`.
+    The TCPM writing a `0b` to any [ALERT] bit has no effect, and therefore does not cause those [ALERT] bits to be set or cleared.
+    The [Alert#] pin remains asserted until all [ALERT] bits are cleared by the TCPM.
+    If the TCPM writes a `1b` to a bit that is already `0b`, the TCPC shall not change the value of that bit.
+
+    Writing a `1b` to [ALERT.RxBufferOverflow] does not clear it unless the TCPM also writes a `1b` to [ALERT.RxStatus].
+    The [ALERT.RxBufferOverflow] is always asserted if the SOP\* buffer registers are full,
+    and those registers can only be cleared by writing a `1b` to [ALERT.RxStatus].
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x0000
+  fields:
+    - bit(s): "B15"
+      name: "Vendor Defined Alert"
+      details:
+        0b: "Alert cleared."
+        1b: |
+          A vendor defined alert has been detected.
+
+          Defined in the [VENDOR_DEFINED] registers. Refer to the vendor datasheet for details.
+          This bit can be cleared, regardless of the current status of the alert source.
+    - bit(s): "B14"
+      name: "Alert Extended"
+      details:
+        0b: "Alert cleared."
+        1b: |
+          An extended interrupt event has occurred.
+
+          Read the [ALERT_EXTENDED] register.
+    - bit(s): "B13"
+      name: "Extended Status"
+      details:
+        0b: "Alert cleared."
+        1b: "Extended Status changed."
+    - bit(s): "B12"
+      name: "Beginning SOP* Message Status"
+      identifier: "RxBeginningStatus"
+      details:
+        0b: "Alert cleared."
+        1b: |
+          The [RECEIVE_BUFFER] register changed.
+
+          Setting [READABLE_BYTE_COUNT] to 0 does not set this bit.
+          Set if [READABLE_BYTE_COUNT] is greater than 133 to indicate an extended USB PD message with
+          more than 128 data bytes has been received. Not set if [READABLE_BYTE_COUNT] is 133 or less.
+    - bit(s): "B11"
+      name: "VBus Sink Disconnect Detected"
+      details:
+        0b: "Alert cleared."
+        1b: |
+          The TCPC in [Attached.SNK] state has detected a Sink disconnect.
+
+          This bit shall only be asserted when [POWER_CONTROL.AutoDischargeDisconnect] is set.
+          The Sink TCPC asserts this bit either when [POWER_STATUS.VbusPresent] transitions from `1b` to `0b`
+          (if [DEVICE_CAPABILITIES_2.SinkDisconnectDetection]=`0b`) or the TCPC detects VBUS falling below
+          [VBUS_SINK_DISCONNECT_THRESHOLD] (if [DEVICE_CAPABILITIES_2.SinkDisconnectDetection]=`1b`).
+    - bit(s): "B10"
+      name: "Receive Buffer Overflow"
+      identifier: "RxBufferOverflow"
+      details:
+        0b: "TCPC Rx buffer is functioning properly."
+        1b: |
+          TCPC Rx buffer has overflowed.
+
+          Future GoodCRC shall not be sent.
+          Writing 1 to this register acknowledges the overflow.
+          The overflow is cleared by writing to [ALERT.RxStatus].
+    - bit(s): "B9"
+      name: "Fault"
+      details:
+        0b: "No fault."
+        1b: |
+          A fault has occurred.
+
+          Read the [FAULT_STATUS] register.
+    - bit(s): "B8"
+      name: "VBus Voltage Alarm Low"
+      identifier: "VBusVoltageAlarmLo"
+      details:
+        0b: "Alert cleared."
+        1b: "A low-voltage alarm has occurred."
+    - bit(s): "B7"
+      name: "VBus Voltage Alarm High"
+      identifier: "VBusVoltageAlarmHi"
+      details:
+        0b: "Alert cleared."
+        1b: "A high-voltage alarm has occurred."
+    - bit(s): "B6"
+      name: "Transmit SOP* Message Successful"
+      identifier: "TxMessageSuccessful"
+      details:
+        0b: "Alert cleared."
+        1b: |
+          Reset or SOP\* message transmission successful.
+
+          GoodCRC response received on SOP\* message transmission.
+          Transmit SOP\* message buffer registers are empty.
+    - bit(s): "B5"
+      name: "Transmit SOP* Message Discarded"
+      identifier: "TxMessageDiscarded"
+      details:
+        0b: "Alert cleared."
+        1b: |
+          Reset or SOP\* message transmission not sent due to an incoming receive message.
+
+          Transmit SOP\* message buffer registers are empty.
+    - bit(s): "B4"
+      name: "Transmit SOP* Message Failed"
+      identifier: "TxMessageFailed"
+      details:
+        0b: "Alert cleared."
+        1b: |
+          SOP\* message transmission not successful.
+
+          No GoodCRC response received on SOP\* message transmission.
+          Transmit SOP\* message buffer registers are empty.
+    - bit(s): "B3"
+      name: "Received Hard Reset"
+      identifier: "HardReset"
+      details:
+        0b: "Alert cleared."
+        1b: "Received Hard Reset message."
+    - bit(s): "B2"
+      name: "Received SOP* Message Status"
+      identifier: "RxStatus"
+      details:
+        0b: "Alert cleared."
+        1b: |
+          [RECEIVE_BUFFER] register changed.
+
+          [READABLE_BYTE_COUNT] being set to 0 does not set this bit.
+    - bit(s): "B1"
+      name: "Power Status"
+      details:
+        0b: "Alert cleared."
+        1b: |
+          Power Status changed.
+
+          Read the [POWER_STATUS] register.
+    - bit(s): "B0"
+      name: "CC Status"
+      details:
+        0b: "Alert cleared."
+        1b: |
+          CC Status changed.
+
+          TCPC shall not assert this bit when [CC_STATUS.Looking4Connection] changes state
+          if [TCPC_CONTROL.EnableLooking4ConnectionAlert] is set to `0b`.
+
+"ALERT_MASK":
+  address: 0x12
+  bytes: 2
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x7FFF
+  fields:
+    - bit(s): "B15"
+      name: "Vendor Defined Alert Mask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+    - bit(s): "B14"
+      name: "Alert Extended Mask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+    - bit(s): "B13"
+      name: "Extended Status Mask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+    - bit(s): "B12"
+      name: "Beginning SOP* Message Status Mask"
+      identifier: "RxBeginningStatusMask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+    - bit(s): "B11"
+      name: "VBus Sink Disconnect Detected Mask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+    - bit(s): "B10"
+      name: "Receive Buffer Overflow Mask"
+      identifier: "RxBufferOverflowMask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+    - bit(s): "B9"
+      name: "Fault Mask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+    - bit(s): "B8"
+      name: "VBus Voltage Alarm Low Mask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+    - bit(s): "B7"
+      name: "VBus Voltage Alarm High Mask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+    - bit(s): "B6"
+      name: "Transmit SOP* Message Successful Mask"
+      identifier: "TxMessageSuccessfulMask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+    - bit(s): "B5"
+      name: "Transmit SOP* Message Discarded Mask"
+      identifier: "TxMessageDiscardedMask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+    - bit(s): "B4"
+      name: "Transmit SOP* Message Failed Mask"
+      identifier: "TxMessageFailedMask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+    - bit(s): "B3"
+      name: "Received Hard Reset Mask"
+      identifier: "HardResetMask"
+      details:
+        - - 0b: Interrupt masked.
+            1b: Interrupt unmasked.
+          - The Hard Reset should generally *not* be masked.
+    - bit(s): "B2"
+      name: "Received SOP* Message Status Mask"
+      identifier: "RxStatusMask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+    - bit(s): "B1"
+      name: "Power Status Mask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+    - bit(s): "B0"
+      name: "CC Status Mask"
+      details:
+        0b: Interrupt masked.
+        1b: Interrupt unmasked.
+
+"POWER_STATUS_MASK":
+  address: 0x14
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0xFF
+  fields:
+    - bit(s): "B7"
+      name: "Debug Accessory Connected Status Mask"
+      identifier: "DebugAccessoryConnectedMask"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B6"
+      name: "TCPC Initialization Status Mask"
+      identifier: "TCPCInitializationMask"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B5"
+      name: "Sourcing Nondefault Voltage Status Interrupt Mask"
+      identifier: "SourcingNondefaultVoltageMask"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B4"
+      name: "Sourcing VBus Status Interrupt Mask"
+      identifier: "SourcingVBusMask"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B3"
+      name: "VBus Detection Status Interrupt Mask"
+      identifier: "VBusDetectionMask"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B2"
+      name: "VBus Present Status Interrupt Mask"
+      identifier: "VBusPresentMask"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B1"
+      name: "VConn Present Status Interrupt Mask"
+      identifier: "VConnPresentMask"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "Sinking VBus Status Interrupt Mask"
+      identifier: "SinkingVBusMask"
+      details: |
+        <<PLACEHOLDER>>
+
+"FAULT_STATUS_MASK":
+  address: 0x15
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0xFF
+  fields:
+    - bit(s): "B7"
+      name: "All Registers Reset To Default"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B6"
+      name: "Force Off VBus Interrupt Status Mask"
+      identifier: "ForceOffVBusMask"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B5"
+      name: "Auto Discharge Failed Mask"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B4"
+      name: "Force Discharge Failed Mask"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B3"
+      name: "VBus Over Current Protection Fault Interrupt Status Mask"
+      identifier: "InternalOrExternalOCPFaultMask"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B2"
+      name: "VBus Over Voltage Protection Fault Interrupt Status Mask"
+      identifier: "InternalOrExternalOCVFaultMask"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B1"
+      name: "VConn Over Current Fault Interrupt Status Mask"
+      identifier: "VConnOverCurrentFaultMask"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "I2C Interface Error Interrupt Status Mask"
+      identifier: "I2CInterfaceErrorMask"
+      details: |
+        <<PLACEHOLDER>>
+
+"EXTENDED_STATUS_MASK":
+  address: 0x16
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x01
+  fields:
+    - bit(s): "B7..1"
+      reserved: true
+    - bit(s): "B0"
+      name: "vSafe0V Status Mask"
+      details: |
+        <<PLACEHOLDER>>
+
+"ALERT_EXTENDED_MASK":
+  address: 0x17
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x07
+  fields:
+    - bit(s): "B7..3"
+      reserved: true
+    - bit(s): "B2"
+      name: "Timer Expired"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B1"
+      name: "Source Fast Role Swap Mask"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "Sink Fast Role Swap Mask"
+      details: |
+        <<PLACEHOLDER>>
+
+"CONFIGURE_STANDARD_OUTPUT":
+  address: 0x18
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x60
+  fields:
+    - bit(s): "B7"
+      name: "High Impedance Outputs"
+      required: false
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B6"
+      name: "Debug Accessory Connected#"
+      required: false
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B5"
+      name: "Audio Accessory Connected#"
+      required: false
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B4"
+      name: "Active Cable Connected"
+      required: false
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B3..2"
+      name: "MUX Control"
+      required: false
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B1"
+      name: "Connection Present"
+      required: false
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "Connector Orientation"
+      required: false
+      details: |
+        <<PLACEHOLDER>>
+
+"TCPC_CONTROL":
+  address: 0x19
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x00
+  fields:
+    - bit(s): "B7"
+      name: "Enable SMBus PEC"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B6"
+      name: "Enable Looking4Connection Alert"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B5"
+      name: "Enable Watchdog Timer"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B5"
+      name: "Debug Accessory Control"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B3..2"
+      name: "I2C Clock Stretching Control"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B1"
+      name: "BIST Test Mode"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "Plug Orientation"
+      details: |
+        <<PLACEHOLDER>>
+
+"ROLE_CONTROL":
+  address: 0x1A
+  bytes: 1
+  details: |
+    After the TCPC has set the power on reset default values, this register is set and cleared only by the TCPM.
+    The TCPM writes to this register to configure the CC pull up (Rp) or pull down (Rd) resistors.
+
+    The TCPM shall write B6 (DRP) = `0b` and B3..0 (CC1/CC2) if it wishes to control the Rp/Rd directly
+    instead of having the TCPC perform DRP toggling autonomously.
+    When controlling Rp/Rd directly, the TCPM writes to B3..0 (CC1/CC2) each time it wishes to change the CC1/CC2 values.
+    This control is used for TCPM-TCPC implementing Source or Sink only as well as when a connection has been detected via
+    DRP toggling but the TCPM wishes to attempt Try.SRC or Try.SNK (as defined in [USB TC]).
+
+    The TCPM may configure the TCPC to autonomously toggle the Rp/Rd when the TCPM-TCPC is implementing a DRP.
+    When initiating autonomous DRP toggling, the TCPM shall write B6 (DRP) = `1b` and write the starting value of
+    Rp/Rd to B3..0 (CC1/CC2) to indicate DRP autonomous toggling mode to the TCPC.
+    The TCPC shall not start the DRP toggling until subsequently the TCPM writes to the [COMMAND] register to start
+    the DRP toggling while [POWER_CONTROL.AutoDischargeDisconnect]=`0b`, as in Figure 4-19.
+
+    It is recommended the TCPM write [ROLE_CONTROL.DRP]=`0b` before writing to [POWER_CONTROL.AutoDischargeDisconnect] and
+    starting the DRP toggling using [COMMAND.Look4Connection] as shown in Figure 4-24, Figure 4-25 and Figure 4-26.
+    If [ROLE_CONTROL.DRP]=`1b`, the only allowed values for CC1/CC2 are Rp/Rp or Rd/Rd.
+    [COMMAND.Look4Connection] shall do nothing if CC1/CC2 are not Rp/Rp or Rd/Rd.
+    When CC1 and CC2 are set to Open and DRP = `0b`, the TCPC may power down the PHY and CC Status comparators.
+
+    When the TCPM has set [ROLE_CONTROL.CC1] = [ROLE_CONTROL.CC2]=`11b` (Open), the Sink TCPC is recommended
+    to remove terminations from the CC pins as long as the VBUS is present (i.e. above vSafe5V).
+    This allows a bus-powered Sink TCPC to remove terminations from CC pins in USB Type-C ErrorRecovery state when the VBUS is present.
+  permissions:
+    read: true
+    write: true
+  reset-value: "..."
+  fields:
+    - bit(s): "B7"
+      reserved: true
+    - bit(s): "B6"
+      name: "DRP"
+      details:
+        0b: "Source-only or Sink-only power mode is selected."
+        1b:
+          - Dual-Role-Power mode is selected.
+          - |
+            The TCPC shall use the Rp value defined in [`B5..4`](#rp-value) when a connection is resolved.
+            The TCPC toggles CC1 & CC2 after receiving [COMMAND.Look4Connection] and until a connection is detected.
+            Upon connection, the TCPC shall resolve to either an Rp or Rd and report the CC1/CC2 State in the [CC_STATUS] register.
+    - bit(s): "B5..4"
+      name: "Rp Value"
+      details:
+        00b: "Rp default"
+        01b: "Rp 1.5A"
+        10b: "Rp 3.0A"
+        11b: "Reserved"
+    - bit(s): "B3..2"
+      name: "CC2"
+      details:
+        00b: "Ra"
+        01b: "Rp (Use Rp definition in [`B5..4`](#rp-value))"
+        10b: "Rd"
+        11b: "Open (Disconnect or don't care)"
+    - bit(s): "B1..0"
+      name: "CC1"
+      details:
+        00b: "Ra"
+        01b: "Rp (Use Rp definition in [`B5..4`](#rp-value))"
+        10b: "Rd"
+        11b: "Open (Disconnect or don't care)"
+
+"FAULT_CONTROL":
+  address: 0x1B
+  bytes: 1
+  details: |
+    After the TCPC has set the power on reset default values, this register is set and cleared only by the TCPM.
+    The TCPM writes to [FAULT_CONTROL] to enable/disable the fault circuitry.
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x00
+  fields:
+    - bit(s): "B7..5"
+      reserved: true
+    - bit(s): "B4"
+      name: "Force Off VBus"
+      required: false
+      details:
+        - - 0b: Allow [STANDARD_INPUT_SIGNAL.ForceOffVBus] control.
+          - 1b: Block [STANDARD_INPUT_SIGNAL.ForceOffVBus] control.
+        - This enables or disables the [STANDARD_INPUT_SIGNAL] Force Off VBus functionality for debug purposes.
+        - Required if [STANDARD_INPUT_CAPABILITIES.ForceOffVBUS]=`1b`.
+    - bit(s): "B3"
+      name: "VBus Discharge Fault Detection Timer"
+      details:
+        - - 0b: VBus Discharge Fault Detection Timer enabled.
+          - 1b: VBus Discharge Fault Detection Timer disabled.
+        - This enables the timers for both [FAULT_STATUS.AutoDischargeFailed] and [FAULT_STATUS.ForceDischargeFailed].
+    - bit(s): "B2"
+      name: "VBus Over Current Protection Fault"
+      identifier: "InternalOrExternalOCPFault"
+      required: false
+      details:
+        - - 0b: Internal and External OCP circuit enabled.
+          - 1b: Internal and External OCP circuit disabled.
+        - Required if [DEVICE_CAPABILITIES_1.VBusOCPReporting]=`1b`.
+    - bit(s): "B1"
+      name: "VBus Over Voltage Protection Fault"
+      identifier: "InternalOrExternalOVPFault"
+      required: false
+      details:
+        - - 0b: Internal and External OVP circuit enabled.
+          - 1b: Internal and External OVP circuit disabled.
+        - Required if [DEVICE_CAPABILITIES_1.VBusOVPReporting]=`1b`.
+    - bit(s): "B0"
+      name: "VConn Over Current Fault"
+      required: false
+      details:
+        - - 0b: Fault detection circuit enabled.
+          - 1b: Fault detection circuit disabled.
+        - Required if [DEVICE_CAPABILITIES_2.VConnOvercurrentFaultCapable]=`1b`.
+
+"POWER_CONTROL":
+  address: 0x1C
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x60
+  fields:
+    - bit(s): "B7"
+      name: "Fast Role Swap Enable"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B6"
+      name: "VBUS_VOLTAGE Monitor"
+      identifier: "VBusVoltageMonitor"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B5"
+      name: "Disable Voltage Alarms"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B4"
+      name: "Auto Discharge Disconnect"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B3"
+      name: "Enable Bleed Discharge"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B2"
+      name: "Force Discharge"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B1"
+      name: "VConn Power Supported"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "Enable VConn"
+      details: |
+        <<PLACEHOLDER>>
+
+"CC_STATUS":
+  address: 0x1D
+  bytes: 1
+  details: |
+    The TCPM starts the DRP toggling by issuing [COMMAND.Look4Connection].
+
+    The TCPM reads this register upon detecting an [Alert#] and seeing the [ALERT.CCStatus]=`1b`.
+    The TCPC indicates the Connection status, the Connection result, and the current CC state in this register.
+
+    The TCPC shall set [CC_STATUS.Looking4Connection]=`0b` when it has detected a potential connection.
+    The Autonomous DRP toggling details are defined in Figure 4-24 and Section 4.4.8.
+
+    The TCPM reads the [Looking4Connection]([CC_STATUS.Looking4Connection]) to determine if the TCPC is toggling Rp/Rd when operating as a DRP.
+    The TCPM reads the [CC_STATUS.ConnectResult] to determine if a DRP TCPC is presenting an Rp or Rd.
+    The TCPM shall read the [CC_STATUS.CC1State] and [CC_STATUS.CC2State] to determine the CC1 and CC2 states.
+
+    When reporting the state of the CC lines, the TCPC shall debounce for tTCPCfilter.
+    The TCPC shall perform a minimal debounce and the TCPM must complete the debounce as defined in [USB TC].
+
+    The TCPM as a Source detects a Sink attachment and detachment by reading [CC_STATUS.CC1State] and [CC_STATUS.CC2State] bits.
+    The CC Status monitoring may be disabled per Section 4.8.3.
+
+    A TCPM which is using polling rather than Alerts should assume the data in the [CC_STATUS] register is not valid until at least
+    tCCStatusDelay + tTCPCFilter + tCcTCPCSampleRate (max) after the [ROLE_CONTROL] has been updated.
+    The tCcTCPCSampleRate is the CC sample rate used by the TCPC.
+    The CC sampling method and rate is performed in a vendor specific manner and therefore outside the scope of this specification.
+  permissions:
+    read: true
+    write: false
+  reset-value: null
+  fields:
+    - bit(s): "B7..6"
+      reserved: true
+    - bit(s): "B5"
+      name: "Looking4Connection"
+      details:
+        - 0b:
+            - "TCPC is not actively looking for a connection."
+            - "A transition from `1b` to `0b` indicates a potential connection has been found."
+        - 1b:
+            - "TCPC is looking for a connection."
+            - "Toggling as a DRP or looking for a connection as Sink/Source only condition."
+    - bit(s): "B4"
+      name: "Connect Result"
+      details:
+        - 0b: "Alert cleared."
+        - 1b:
+            - "[RECEIVE_BUFFER] register changed."
+            - "[READABLE_BYTE_COUNT] being set to `0` does not set this bit."
+    - bit(s): "B3..2"
+      name: "CC2 State"
+      details:
+        - - If ([ROLE_CONTROL.CC2]=`Rp`) or ([CC_STATUS.ConnectResult]=`0b`)
+          - 00b: SRC.Open (Open, Rp)
+            01b: SRC.Ra (below maximum vRa)
+            10b: SRC.Rd (within the vRd range)
+            11b: Reserved
+        - - If ([ROLE_CONTROL.CC2]=`Rd`) or ([CC_STATUS.ConnectResult]=`1b`)
+          - 00b: SNK.Open (below maximum vRa)
+            01b: SNK.Default (above minimum vRd-Connect)
+            10b: SNK.Power1.5 (above minimum vRd-Connect), detects Rp 1.5A
+            11b: SNK.Power3.0 (above minimum vRd-Connect), detects Rp 3.0A
+        - - If [ROLE_CONTROL.CC2]=`Ra`, this field is set to `00b`
+          - If [ROLE_CONTROL.CC2]=`Open`, this field is set to `00b`
+          - |
+            This field always returns `00b` if ([CC_STATUS.Looking4Connection]=`1b`) or
+            ([POWER_CONTROL.EnableVconn]=`1b` and [TCPC_CONTROL.PlugOrientation]=`1b`).
+            Otherwise, the returned value depends upon [ROLE_CONTROL.CC2].
+    - bit(s): "B1..0"
+      name: "CC1 State"
+      details:
+        - - If ([ROLE_CONTROL.CC1]=`Rp`) or ([CC_STATUS.ConnectResult]=`0b`)
+          - 00b: SRC.Open (Open, Rp)
+            01b: SRC.Ra (below maximum vRa)
+            10b: SRC.Rd (within the vRd range)
+            11b: Reserved
+        - - If ([ROLE_CONTROL.CC1]=`Rd`) or ([CC_STATUS.ConnectResult]=`1b`)
+          - 00b: SNK.Open (below maximum vRa)
+            01b: SNK.Default (above minimum vRd-Connect)
+            10b: SNK.Power1.5 (above minimum vRd-Connect), detects Rp 1.5A
+            11b: SNK.Power3.0 (above minimum vRd-Connect), detects Rp 3.0A
+        - - If [ROLE_CONTROL.CC1]=`Ra`, this field is set to `00b`
+          - If [ROLE_CONTROL.CC1]=`Open`, this field is set to `00b`
+          - |
+            This field always returns `00b` if ([CC_STATUS.Looking4Connection]=`1b`) or
+            ([POWER_CONTROL.EnableVconn]=`1b` and [TCPC_CONTROL.PlugOrientation]=`1b`).
+            Otherwise, the returned value depends upon [ROLE_CONTROL.CC1].
+
+"POWER_STATUS":
+  address: 0x1E
+  bytes: 1
+  details: |
+    This register is set and cleared by the TCPC.
+    The TCPM reads this register upon detecting an [Alert#] and reading the [ALERT.PowerStatus] bit set to `1b`.
+    The TCPC indicates the current Power Status in this register.
+
+    The TCPM operating as a Sink at vSafe5V (with or without a USB PD Contract) shall detect VBus presence and removal by reading the [VBusPresent]([POWER_STATUS.VBusPresent]) bit.
+
+    The TCPM shall check the state of the TCPC Initialization Status bit when it starts or resets.
+    The TCPM shall not start normal operation until the TCPC Initialization Status bit is cleared.
+    The TCPC shall set the TCPC Initialization Status bit to zero when initialization or reset is complete and all registers are valid.
+  permissions:
+    read: true
+    write: false
+  reset-value: null
+  fields:
+    - bit(s): "B7"
+      name: "Debug Accessory Connected"
+      required: false
+      details:
+        - - 0b: No Debug Accessory connected (default).
+          - 1b: Debug Accessory connected.
+        - Reflects the state of the [DebugConnectedAccessory#] output if supported.
+    - bit(s): "B6"
+      name: "TCPC Initialization Status"
+      details:
+        - 0b: The TCPC has completed initialization and all registers are valid.
+        - 1b:
+            - The TCPC is still performing internal initialization.
+            - The only registers that are guaranteed to return the correct values are `0x00`..`0x0F`.
+    - bit(s): "B5"
+      name: "Sourcing Nondefault Voltage"
+      required: false
+      details:
+        - - 0b: vSafe5V.
+          - 1b: Nondefault VBus voltage.
+        - |
+          This bit does not control the power path, it just provides a monitor of the status.
+          This bit is asserted as long as the TCPC is sourcing nondefault voltage over VBus (i.e. not vSafe5V)
+          as a response to TCPM writing to [COMMAND.SourceVBusNondefaultVoltage].
+
+          Required if nondefault VBus voltage can be sourced.
+
+          This bit is not valid if [POWER_STATUS.SourcingVBus]=`0b`.
+    - bit(s): "B4"
+      name: "Sourcing VBus"
+      details:
+        - - 0b: Sourcing VBus is disabled.
+          - 1b: Sourcing VBus is enabled.
+        - This bit does not control the power path, it just provides a monitor of the status.
+    - bit(s): "B3"
+      name: "VBus Detection Enabled"
+      details:
+        - - 0b: VBus detection disabled.
+          - 1b: VBus detection enabled (default).
+        - Indicates whether the TCPC is monitoring for [POWER_STATUS.VBusPresent] and vSafe0V level, or the detection circuits have been powered off.
+    - bit(s): "B2"
+      name: "VBus Present"
+      details:
+        - - 0b: VBus disconnected.
+          - 1b: VBus connected.
+        - |
+          The TCPC shall report VBus present when TCPC detects VBus rises above 4V.
+          The TCPC shall report VBus is not present when TCPC detects VBus falls below 3.5V.
+          The TCPC may report VBus is not present if VBus is between 3.5V and 4V.
+
+          This bit is not valid when [POWER_STATUS.VbusDetectionEnabled]=`0b`.
+    - bit(s): "B1"
+      name: "VConn Present"
+      details:
+        - - 0b: VConn is not present.
+          - 1b:
+              - This bit is asserted when VConn present on CC1 or CC2.
+              - Threshold is fixed at 2.4V
+        - If [POWER_CONTROL.EnableVConn] is disabled this bit should be set to `0b`.
+    - bit(s): "B0"
+      name: "Sinking VBus"
+      details:
+        - 0b: Sink is disconnected (default and if sinking VBus is not supported).
+        - 1b: TCPC is sinking VBus to the system load.
+
+"FAULT_STATUS":
+  address: 0x1F
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x80
+  fields:
+    - bit(s): "B7"
+      name: "All Registers Reset To Default"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B6"
+      name: "Force Off VBus"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B5"
+      name: "Auto Discharge Failed"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B4"
+      name: "Force Discharge Failed"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B3"
+      name: "VBus Over Current Protection Fault"
+      identifier: "InternalOrExternalOCP"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B2"
+      name: "VBus Over Voltage Protection Fault"
+      identifier: "InternalOrExternalOVP"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B1"
+      name: "VConn Over Current Fault"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "I2C Interface Error"
+      details: |
+        <<PLACEHOLDER>>
+
+"EXTENDED_STATUS":
+  address: 0x20
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: false
+  reset-value: null
+  fields:
+    - bit(s): "B7..1"
+      reserved: true
+    - bit(s): "B0"
+      name: "vSafe0V"
+      details: |
+        <<PLACEHOLDER>>
+
+"ALERT_EXTENDED":
+  address: 0x21
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x00
+  fields:
+    - bit(s): "B7..3"
+      reserved: true
+    - bit(s): "B2"
+      name: "Timer Expired"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B1"
+      name: "Source Fast Role Swap"
+      identifier: "SourceFRSwap"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "Sink Fast Role Swap"
+      identifier: "SinkFRSwap"
+      details: |
+        <<PLACEHOLDER>>
+
+"COMMAND":
+  address: 0x23
+  bytes: 1
+  details: |
+    The [COMMAND] register is issued and written by the TCPM.
+    The [COMMAND] register is cleared by the TCPC after being acted upon.
+
+    The TCPM shall issue [COMMAND.Look4Connection] to enable the TCPC to autonomously toggle the Rp/Rd.
+    The initial Rp or Rd for toggling is determined by [ROLE_CONTROL.CC1] and [ROLE_CONTROL.CC2].
+    If [ROLE_CONTROL.CC1] and [ROLE_CONTROL.CC2] are not the same value, the [COMMAND.Look4Connection] shall have no effect.
+    If [POWER_CONTROL.AutoDischargeDisconnect] is not set to `0b`, the [COMMAND.Look4Connection] shall have no effect.
+
+    The TCPM shall issue [COMMAND.Look4Connection] to enable the TCPC to restart Connection Detection in cases where the role is fixed as Source or Sink, [ROLE_CONTROL.DRP]=`0b`.
+    An example of this is when a potential connection as a Source occurred but was further debounced by the TCPM to find the Sink disconnected.
+    In this case, a Source Only or DRP should go back to its Unattached.SRC state (as defined in [USB TC]).
+    This would result in [ROLE_CONTROL] staying the same.
+
+    [COMMAND.I2CIdle] is used to put the I2C interface into the idle state.
+    When the TCPC receives [COMMAND.I2CIdle], the TCPC may generate a bit-level Not Acknowledge signal
+    (a NAK where SDA remains HIGH during the ninth clock pulse) to its own slave address or any I2C commands.
+
+    The TCPM may send the [COMMAND.WakeI2C] as a throw away command to wake the I2C interface.
+    The [COMMAND.WakeI2C] requires no action by the TCPC other than to wake the I2C device interface in the TCPC.
+
+    [COMMAND.I2CIdle] is decoupled from other Alert status detection mechanisms (such as [CC_STATUS], [POWER_STATUS], [RECEIVE_DETECT], etc).
+    For example, writing [COMMAND.I2CIdle] has no effect on [ALERT.CCStatus], or the [CC_STATUS] register behavior.
+    [CC_STATUS] detection may be disabled by writing to the [ROLE_CONTROL] register, but its behavior is not affected by the [COMMAND.I2CIdle].
+
+    While there is a valid Source-to-Sink connection, the TCPM acting as a Sink shall write [COMMAND.DisableSinkVbus] (if [DEVICE_CAPABILITIES_1.SinkVbus]=`1b`)
+    to remove the Sink connection upon reception of or prior to transmitting a Power Role Swap or Hard Reset.
+
+    The TCPM shall issue [COMMAND.SourceVbusNondefaultVoltage] to enable the TCPC to transition the VBus source to a nondefault voltage level.
+    [VBUS_NONDEFAULT_TARGET] is an optional register declared in [DEVICE_CAPABILITIES_1] register.
+    The target voltage for [COMMAND.SourceVbusNondefaultVoltage] can be set in the [VBUS_NONDEFAULT_TARGET] register.
+    Alternatively, the target voltage level for [COMMAND.SourceVbusNondefaultVoltage] is set in a vendor defined manner.
+    The steps of transitioning to source a nondefault voltage over VBus using [VBUS_NONDEFAULT_TARGET] register shall be as follow:
+
+      1.  TCPC supplies vSafe5V over VBus
+      2.  TCPM writes to [VBUS_NONDEFAULT_TARGET] to set the target voltage level of [COMMAND.SourceVbusNondefaultVoltage]
+      3.  TCPM issues [COMMAND.SourceVbusNondefaultVoltage]
+      4.  TCPC starts the operation of transitioning to the target voltage level as given in [VBUS_NONDEFAULT_TARGET].
+          For TCPC that integrates the power converter, the TCPC shall control the voltage transitioning and meet the power supply requirements in the USB PD Specification.
+
+    If the TCPM has a new target voltage level for [COMMAND.SourceVbusNondefaultVoltage], it shall repeat Step2.
+    The TCPM is not required to go back to vSafe5V and then to a different voltage.
+    It may go directly to the new voltage by writing new values to [VBUS_NONDEFAULT_TARGET] and then issuing the [COMMAND.SourceVbusNondefaultVoltage].
+  permissions:
+    read: false
+    write: true
+  reset-value: 0x00
+  fields:
+    - bit(s): "B7..0"
+      name: "Wake I2C"
+      details:
+        - 00010001b: No action is taken other than to wake the I2C interface.
+    - bit(s): "B7..0"
+      name: "Disable VBus Detect"
+      details:
+        - 00100010b: |
+            Disable VBus present and vSafe0V detection.
+
+            This is an invalid [COMMAND] if the TCPC has sourcing or sinking power over VBus enabled.
+    - bit(s): "B7..0"
+      name: "Enable VBus Detect"
+      details:
+        - 00110011b: |
+            Enable VBus present and vSafe0V detection.
+    - bit(s): "B7..0"
+      name: "Disable Sink VBus"
+      details:
+        - 01000100b: |
+            Disable sinking power over VBus and discharge to vSave0V.
+
+            This [COMMAND] does not disable [POWER_STATUS.VBusPresent] detection.
+
+            The TCPC shall clear [FAULT_STATUS.InternalOrExternalOCP] and [FAULT_STATUS.InternalOrExternalOVP].
+    - bit(s): "B7..0"
+      name: "Sink VBus"
+      details:
+        - 01010101b: |
+            Enable sinking power over VBus and enable VBus present detection.
+
+            This is an invalid [COMMAND] if the TCPC has sourcing power over VBus enabled.
+    - bit(s): "B7..0"
+      name: "Disable Source VBus"
+      details:
+        - 01100110b: |
+            Disable sourcing power over VBus and discharge to vSave0V.
+
+            The TCPC shall stop reporting [FAULT_STATUS].
+            Internal or External OCP or OVP Faults.
+            This [COMMAND] does not disable [POWER_STATUS.VBusPresent] detection.
+    - bit(s): "B7..0"
+      name: "Source VBus Default Voltage"
+      details:
+        - 01110111b: |
+            Enable sourcing vSafe5V over VBus and enable VBus present detection.
+
+            The TCPC shall transition to vSafe5V if it is sourcing nondefault voltage.
+            This is an invalid [COMMAND] if the TCPC has sinking power over VBus enabled.
+    - bit(s): "B7..0"
+      name: "Source VBus Nondefault Voltage"
+      details:
+        - 10001000b: |
+            Execute transitioning VBus to a nondefault voltage level.
+
+            This is an invalid [COMMAND] if the TCPC is currently sinking voltage from VBus,
+            or the TCPC does not have the ability to source nondefault voltages (i.e. other than vSafe5V).
+            This is also an invalid [COMMAND] if the TCPC is not already sourcing power over VBus.
+
+            The target VBus voltage to be sourced may be set in a vendor defined manner.
+            The TCPM may need to write to vendor defined register before sending this [COMMAND].
+    - bit(s): "B7..0"
+      name: "Look4Connection"
+      details:
+        - 10011001b: |
+            Start DRP Toggling if [ROLE_CONTROL.DRP]=`1b`.
+
+            If [ROLE_CONTROL.CC1]/[CC2]([ROLE_CONTROL.CC2]) = `01b` start with Rp,
+            if [ROLE_CONTROL.CC1]/[CC2]([ROLE_CONTROL.CC2]) = `10b` start with Rd.
+
+            If [ROLE_CONTROL.CC1]/[CC2]([ROLE_CONTROL.CC2]) are not both `01b` or `10b`,
+            or if [POWER_CONTROL.AutoDischargeDisconnect] is not `0b`, then do not start toggling.
+
+            The TCPM shall issue [COMMAND.Look4Connection] to enable the TCPC to restart Connection Detection
+            in cases where the [ROLE_CONTROL] contents will not change.
+            An example of this is when a potential connection as a Source occurred but was further debounced by the TCPM to find the Sink disconnected.
+            In this case a Source Only or DRP should go back to its Unattached.SRC state (as defined in [USB TC]).
+            This would result in [ROLE_CONTROL] staying the same.
+    - bit(s): "B7..0"
+      name: "Receive One More"
+      identifier: "RxOneMore"
+      details:
+        - 10011001b: |
+            Disable PD message delivery after the next GoodCRC message is received.
+
+            Configure the TCPC to automatically clear the [RECEIVE_DETECT] register after sending the next GoodCRC.
+            This is used to disable message passing at a known point regardless of message separation or the depth of the [RECEIVE_BUFFER] in the TCPC.
+    - bit(s): "B7..0"
+      name: "Send FR Swap Signal"
+      details:
+        - 11001100b: |
+            Send a Fast Role Swap signal within tTCPCSendFRSwap.
+
+            Source TCPC sends Fast Role Swap signal after receiving this [COMMAND] if [POWER_CONTROL.FastRoleSwapEnable]=`1b`.
+            This is an invalid [COMMAND] if [POWER_CONTROL.FastRoleSwapEnable]=`0b`.
+    - bit(s): "B7..0"
+      name: "Reset Transmit Buffer"
+      details:
+        - 11011101b: |
+            The TCPC resets the pointer of the [TRANSMIT_BUFFER] register to offset 1.
+
+            When this [COMMAND] is issued by the TCPM the contents of [TRANSMIT_BUFFER] becomes invalid.
+            This [COMMAND] shall be supported by TCPC compliant with USB Port Controller Specification Revision 2.0.
+    - bit(s): "B7..0"
+      name: "Reset Receive Buffer"
+      details:
+        - 11101110b: |
+            The TCPC resets the pointer of [RECEIVE_BUFFER] when this [COMMAND] is issued by the TCPM.
+
+            If the pointer of [RX_BUF_BYTE_x] is at 132 or less, writing this [COMMAND] would reset the pointer to 1.
+            If the pointer of [RX_BUF_BYTE_x] is at 133 or higher, writing this [COMMAND] would reset the pointer to 133.
+
+            TCPC does not clear the content of the buffer upon receiving this [COMMAND].
+            The TCPM issues this [COMMAND] in order to re-read the [RX_BUF_BYTE_x].
+
+            This [COMMAND] shall be supported by TCPC compliant with USB Port Controller Specification Revision 2.0.
+    - bit(s): "B7..0"
+      name: "I2C Idle"
+      details:
+        - 11111111b: |
+            Put the I2C interface to sleep.
+
+            [COMMAND.WakeI2C] must be sent to re-enable the rest of the I2C interface after this [COMMAND] is sent.
+
+"DEVICE_CAPABILITIES_1":
+  address: 0x24
+  bytes: 2
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: false
+  reset-value: "Vendor Defined"
+  fields:
+    - bit(s): "B15"
+      name: "VBus Nondefault Target"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B14"
+      name: "VBus OCP Reporting"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B13"
+      name: "VBus OVP Reporting"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B12"
+      name: "Bleed Discharge"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B11"
+      name: "Force Discharge"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B10"
+      name: "VBus Measurement and Alarm Capable"
+      identifier: "VBusMeasurementAndAlarmCapable"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B9..8"
+      name: "Source Resistor Supported"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B7..5"
+      name: "Power Roles Supported"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B4"
+      name: "SOP_DBG'/SOP_DBG'' Support"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B3"
+      name: "Source VCONN"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B2"
+      name: "Sink VBus"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B1"
+      name: "Source Nondefault VBus"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "Source VBus"
+      details: |
+        <<PLACEHOLDER>>
+
+"DEVICE_CAPABILITIES_2":
+  address: 0x26
+  bytes: 2
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: false
+  reset-value: "Vendor Defined"
+  fields:
+    - bit(s): "B15"
+      name: "DEVICE_CAPABILITIES_3 Support"
+      identifier: "DeviceCapabilities3Support"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B14"
+      name: "Message Disable Disconnect"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B13"
+      name: "Generic Timer"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B12"
+      name: "Long Message"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B11"
+      name: "SMBus PEC"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B10"
+      name: "Source FR Swap"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B9"
+      name: "Sink FR Swap"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B8"
+      name: "Watchdog Timer"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B7"
+      name: "Sink Disconnect Detection"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B6"
+      name: "Stop Discharge Threshold"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B5..4"
+      name: "VBus Voltage Alarm LSB"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B3..1"
+      name: "VConn Power Supported"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "VConn Overcurrent Fault Capable"
+      details: |
+        <<PLACEHOLDER>>
+
+"STANDARD_INPUT_CAPABILITIES":
+  address: 0x28
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: false
+  reset-value: "Vendor Defined"
+  fields:
+    - bit(s): "B15..5"
+      reserved: true
+    - bit(s): "B4..3"
+      name: "Source Fast Role Swap"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B2"
+      name: "VBus External Over Voltage Fault"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B1"
+      name: "VBus External Over Current Fault"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "Force Off VBus"
+      details: |
+        <<PLACEHOLDER>>
+
+"STANDARD_OUTPUT_CAPABILITIES":
+  address: 0x29
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: false
+  reset-value: "Vendor Defined"
+  fields:
+    - bit(s): "B7"
+      name: "VBus Sink Disconnect Detect Indicator"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B6"
+      name: "Debug Accessory Indicator"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B5"
+      name: "VBus Present Monitor"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B4"
+      name: "Audio Adapter Accessory Indicator"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B3"
+      name: "Active Cable Indicator"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B2"
+      name: "MUX Configuration Control"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B1"
+      name: "Connection Present"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "Connector Orientation"
+      details: |
+        <<PLACEHOLDER>>
+
+"CONFIGURE_EXTENDED_1":
+  address: 0x2A
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x00
+  fields:
+    - bit(s): "B7..2"
+      reserved: true
+    - bit(s): "B1"
+      name: "FR Swap Bidirectional Pin"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "Standard Input Source FR Swap"
+      details: |
+        <<PLACEHOLDER>>
+
+"GENERIC_TIMER":
+  address: 0x2C
+  bytes: 2
+  details: |
+    The TCPM writes a non-zero value to this register to start the general purpose timer.
+    If the TCPM writes a non-zero value to this register before the timer has expired, the timer is restarted with the last written non-zero value.
+    After the timer has expired, the timer does not restart until TCPM writes a non-zero value to this register.
+    The timer shall stop when a zero value is written to this register.
+
+    [ALERT_EXTENDED.TimerExpired] is asserted when the last written non-zero timer value has expired.
+    Clearing the [ALERT_EXTENDED.TimerExpired] has no effect to this register.
+    To avoid a race condition, the TCPM may write a zero value to this register before writing a non-zero value to start the timer.
+  permissions:
+    read: false
+    write: true
+  reset-value: 0x0000
+  fields:
+    - bit(s): "B15..0"
+      name: "Generic Timer"
+      details: |
+        16-bit timer value with 0.1ms LSB.
+
+        A non-zero value starts the timer. A value of zero stops the timer. 
+        The timer does not restart after it has expired.
+
+        Required if [DEVICE_CAPABILITIES_2.GenericTimer]=`1b`.
+
+"MESSAGE_HEADER_INFO":
+  address: 0x2E
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: "..."
+  fields:
+    - bit(s): "B7..5"
+      reserved: true
+    - bit(s): "B4"
+      name: "Cable Plug"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B3"
+      name: "Data Role"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B2..1"
+      name: "USB PD Specification Revision"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "Power Role"
+      details: |
+        <<PLACEHOLDER>>
+
+"RECEIVE_DETECT":
+  address: 0x2F
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x00
+  fields:
+    - bit(s): "B7"
+      name: "Message Disable Disconnect"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B6"
+      name: "Enable Cable Reset"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B5"
+      name: "Enable Hard Reset"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B4"
+      name: "Enable SOP_DBG'' message"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B3"
+      name: "Enable SOP_DBG' message"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B2"
+      name: "Enable SOP'' message"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B1"
+      name: "Enable SOP' message"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B0"
+      name: "Enable SOP message"
+      details: |
+        <<PLACEHOLDER>>
+
+"RECEIVE_BUFFER":
+  address: 0x30
+  bytes: 1
+  details: |
+    The [RECEIVE_BUFFER] comprises of three sets of registers: [READABLE_BYTE_COUNT], [RX_BUF_FRAME_TYPE] and [RX_BUF_BYTE_x].
+    These registers can only be accessed by reading at a common register address `0x30`.
+
+    These registers indicate the status of the received SOP\* message buffer and shall be read by the TCPM when the TCPC
+    sets [ALERT.RxStatus] to indicate that a SOP\* message was received.
+
+    The TCPC shall set the [READABLE_BYTE_COUNT] to `0x00` after the interrupt has been cleared.
+    See Sections 4.7.5, 4.7.6, 4.7.7, 4.7.8, and 4.7.9 for information on receiving SOP\* messages, Hard Reset, and Cable Reset messages respectively.
+
+    The TCPC shall disable PD message delivery and set the [READABLE_BYTE_COUNT] to zero upon detection of a disconnect
+    (Sink TCPC shall use the disconnect condition as defined in [RECEIVE_DETECT.MessageDisableDisconnect]).
+    The TCPM power down PD message delivery per Section 4.8.2.
+
+    If [DEVICE_CAPABILITIES_2.LongMessage] is set to `0b`, the [RECEIVE_BUFFER] is sized to hold two 30 bytes SOP\* messages.
+
+    If [DEVICE_CAPABILITIES_2.LongMessage] is set to `1b`, the [RECEIVE_BUFFER] is sized to hold a 264 bytes SOP\* message plus a 30 bytes SOP\* message.
+
+    Regardless of the [DEVICE_CAPABILITIES_2.LongMessage] setting, TCPC shall automatically increment the pointer of [RX_BUF_BYTE_x] as TCPM reads [RX_BUF_BYTE_x].
+    TCPM can re-read [RX_BUF_BYTE_x] at a zero offset by writing to [COMMAND.ResetReceiveBuffer] (0xEE).
+    However, the pointer of [RX_BUF_BYTE_x] would not increment if TCPM reads [READABLE_BYTE_COUNT] or [RX_BUF_FRAME_TYPE].
+  registers:
+    "READABLE_BYTE_COUNT":
+      address: 0x30
+      bytes: 1
+      details: |
+        The TCPM reads the [READABLE_BYTE_COUNT] to determine the number of bytes in the [RX_BUF_BYTE_x]
+
+        If [DEVICE_CAPABILITIES_2.LongMessage]=`0b`, the value in this register shall be less than or equal to 31.
+
+        If [DEVICE_CAPABILITIES_2.LongMessage]=`1b`, the value supported in this register shall be up to 133.
+      permissions:
+        read: true
+        write: false
+      reset-value: 0x00
+      fields:
+        - bit(s): "B7..0"
+          name: "Readable Byte Count"
+          details: |
+            Indicates the number of bytes in the [RX_BUF_BYTE_x] registers plus one (for the [RX_BUF_FRAME_TYPE]).
+            The content of this register is undefined when the [RECEIVE_BUFFER] is cleared.
+
+    "RX_BUF_FRAME_TYPE":
+      address: 0x30
+      bytes: 1
+      details: |
+        The TCPM reads the [RX_BUF_FRAME_TYPE] to determine the type of message.
+
+        This register is "hidden" and can only be accessed by reading at address `0x30`.
+      permissions:
+        read: true
+        write: false
+      reset-value: 0x00
+      fields:
+        - bit(s): "B7..3"
+          reserved: true
+        - bit(s): "B2..0"
+          name: "Received SOP* Message"
+          identifier: "RxMessage"
+          details:
+            - - 000b: "Received SOP"
+              - 001b: "Received SOP'"
+              - 010b: "Received SOP''"
+              - 011b: "Received SOP_DBG'"
+              - 100b: "Received SOP_DBG''"
+              - 110b: "Received Cable Reset"
+            - "All others are reserved."
+
+    "RX_BUF_BYTE_x":
+      address: 0x30
+      bytes: 1
+      details: |
+        The TCPM reads the content of the USB PD message at index `x` of the receive buffer.
+
+        These registers are "hidden" and can only be accessed by reading at address `0x30`.
+      permissions:
+        read: true
+        write: false
+      reset-value: 0x00
+      fields:
+        - bit(s): "B7..0"
+          name: "Value"
+          details: "The value received at index `x` of the receive buffer."
+
+"TRANSMIT":
+  address: 0x50
+  bytes: 1
+  details: |
+    Transmit aggregate of data written to [TRANSMIT_BUFFER] since the pointer was last reset.
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x00
+  fields:
+    - bit(s): "B7..6"
+      reserved: true
+    - bit(s): "B5..4"
+      name: "Retry Counter"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B3"
+      reserved: true
+    - bit(s): "B2..0"
+      name: "Transmit SOP* Message"
+      details: |
+        <<PLACEHOLDER>>
+
+"TRANSMIT_BUFFER":
+  address: 0x51
+  bytes: 1
+  details: |
+    The [TRANSMIT_BUFFER] holds the [I2C_WRITE_BYTE_COUNT] and the portion of the SOP\* USB PD message payload
+    (including the header and/or the data bytes) most recently written by the TCPM in [TX_BUF_BYTE_x].
+
+    If DEVICE_CAPABILITIES_2.LongMessage is set to zero, the TRANSMIT_BUFFER is capable of holding 30 byte SOP\* message. The TCPM can write up to 30 bytes to the TX_BUF_BYTE_x in one burst.
+
+    Regardless of the [DEVICE_CAPABILITIES_2.LongMessage] setting, the TCPC automatically increments the [TX_BUF_BYTE_x] offset as TCPM writes to [TX_BUF_BYTE_x].
+    The TCPM can re-write to [TX_BUF_BYTE_x] beginning at offset 1 by writing to [COMMAND.ResetTransmitBuffer].
+    The TCPM shall write as many bytes in the buffer as defined in the [I2C_WRITE_BYTE_COUNT] in one I2C write transaction.
+    If the [I2C_WRITE_BYTE_COUNT] is different than the number of bytes written in the buffer,
+    the TCPC shall assert [FAULT_STATUS.I2CInterfaceError] and ignore the write (i.e. no change in the [TX_BUF_BYTE_x] content and the offset).
+  registers:
+    "I2C_WRITE_BYTE_COUNT":
+      address: 0x51
+      bytes: 1
+      details: |
+        The number of bytes the TCPM writes to the [TX_BUF_BYTEx] in the given I2C/SMBus transaction.
+        The TCPM shall write as many bytes in the buffer as defined in this register in one I2C write transaction.
+
+        If [DEVICE_CAPABILITIES_2.LongMessage]=`0b`, the TCPC shall ignore the I2C transaction if [I2C_WRITE_BYTE_COUNT] is more than 30.
+
+        If [DEVICE_CAPABILITIES_2.LongMessage]=`1b`, the TCPC shall ignore the I2C transaction if [I2C_WRITE_BYTE_COUNT] is more than 132.
+      permissions:
+        read: false
+        write: true
+      reset-value: 0x00
+      fields:
+        - bit(s): "B7..0"
+          name: "I2C Write Byte Count"
+          details: |
+            The number of bytes the TCPM writes to the [TX_BUF_BYTEx] in the given I2C/SMBus transaction.
+
+    "TX_BUF_BYTE_x":
+      address: 0x51
+      bytes: 1
+      details: |
+        The TCPM writes the content of the USB PD message to index `x` of the transmit buffer.
+
+        These registers are "hidden" and can only be accessed by reading at address `0x51`.
+      permissions:
+        read: false
+        write: true
+      reset-value: 0x00
+      fields:
+        - bit(s): "B7..0"
+          name: "Value"
+          details: "The value received at index `x` of the receive buffer."
+
+"VBUS_VOLTAGE":
+  address: 0x70
+  bytes: 2
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: false
+  reset-value: 0x0000
+  fields:
+    - bit(s): "B15..12"
+      reserved: true
+    - bit(s): "B11..10"
+      name: "Scale Factor"
+      details: |
+        <<PLACEHOLDER>>
+    - bit(s): "B9..0"
+      name: "VBus Voltage Measurement"
+      details: |
+        <<PLACEHOLDER>>
+
+"VBUS_SINK_DISCONNECT_THRESHOLD":
+  address: 0x72
+  bytes: 2
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x008C
+  fields:
+    - bit(s): "B15..12"
+      reserved: true
+    - bit(s): "B11..0"
+      name: "Voltage Trip Point"
+      details: |
+        <<PLACEHOLDER>>
+
+"VBUS_STOP_DISCHARGE_THRESHOLD":
+  address: 0x74
+  bytes: 2
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x0020
+  fields:
+    - bit(s): "B15..12"
+      reserved: true
+    - bit(s): "B11..0"
+      name: "Voltage Trip Point"
+      details: |
+        <<PLACEHOLDER>>
+
+"VBUS_VOLTAGE_ALARM_HI_CFG":
+  address: 0x76
+  bytes: 2
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x0000
+  fields:
+    - bit(s): "B15..12"
+      reserved: true
+    - bit(s): "B11..0"
+      name: "Voltage Trip Point"
+      details: |
+        <<PLACEHOLDER>>
+
+"VBUS_VOLTAGE_ALARM_LO_CFG":
+  address: 0x78
+  bytes: 2
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x0000
+  fields:
+    - bit(s): "B15..12"
+      reserved: true
+    - bit(s): "B11..0"
+      name: "Voltage Trip Point"
+      details: |
+        <<PLACEHOLDER>>
+
+"VBUS_NONDEFAULT_TARGET":
+  address: 0x7A
+  bytes: 2
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: 0x0000
+  fields:
+    - bit(s): "B15..0"
+      name: "VBus Nondefault Voltage Target"
+      details: |
+        <<PLACEHOLDER>>
+
+"DEVICE_CAPABILITIES_3":
+  address: 0x7C
+  bytes: 2
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: false
+  reset-value: "Vendor Defined"
+  fields:
+    - bit(s): "B15..3"
+      reserved: true
+    - bit(s): "B2..0"
+      name: "VBus Voltage Support"
+      details: |
+        <<PLACEHOLDER>>
+
+"VENDOR_DEFINED":
+  address: 0x80
+  bytes: 1
+  details: |
+    <<PLACEHOLDER>>
+  permissions:
+    read: true
+    write: true
+  reset-value: "Vendor Defined"
+  fields:
+    - bit(s): "B15..0"
+      reserved: true

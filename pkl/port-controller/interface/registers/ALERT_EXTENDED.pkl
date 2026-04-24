@@ -1,0 +1,29 @@
+amends "../Register.pkl"
+
+address = 0x21
+size = 1.b
+readable = true
+writable = true
+resetValue = 0x00
+fields {
+  ["Reserved.B7..3"] {
+    bits = "B7..3"
+    name = "Reserved"
+    required = true
+  }
+  ["TimerExpired"] {
+    bits = "B2"
+    name = "Timer Expired"
+    required = true
+  }
+  ["SourceFRSwap"] {
+    bits = "B1"
+    name = "Source Fast Role Swap"
+    required = true
+  }
+  ["SinkFRSwap"] {
+    bits = "B0"
+    name = "Sink Fast Role Swap"
+    required = true
+  }
+}

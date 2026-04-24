@@ -1,0 +1,19 @@
+amends "../Register.pkl"
+
+address = 0x08
+size = 2.b
+readable = true
+writable = false
+resetValue = "Vendor Defined"
+fields {
+  ["bcdUSBPDRevision"] {
+    bits = "B15..8"
+    name = "bcd USB PD Revision"
+    required = true
+  }
+  ["bcdUSBPDVersion"] {
+    bits = "B7..0"
+    name = "bcd USB PD Version"
+    required = true
+  }
+}

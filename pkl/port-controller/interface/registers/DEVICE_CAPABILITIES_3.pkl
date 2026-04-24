@@ -1,0 +1,19 @@
+amends "../Register.pkl"
+
+address = 0x7C
+size = 2.b
+readable = true
+writable = false
+resetValue = "Vendor Defined"
+fields {
+  ["Reserved.B15..3"] {
+    bits = "B15..3"
+    name = "Reserved"
+    required = true
+  }
+  ["VBusVoltageSupport"] {
+    bits = "B2..0"
+    name = "VBus Voltage Support"
+    required = true
+  }
+}

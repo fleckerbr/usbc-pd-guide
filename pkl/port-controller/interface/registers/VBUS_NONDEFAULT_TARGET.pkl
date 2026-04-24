@@ -1,0 +1,14 @@
+amends "../Register.pkl"
+
+address = 0x7A
+size = 2.b
+readable = true
+writable = true
+resetValue = 0x0000
+fields {
+  ["VBusNondefaultVoltageTarget"] {
+    bits = "B15..0"
+    name = "VBus Nondefault Voltage Target"
+    required = true
+  }
+}

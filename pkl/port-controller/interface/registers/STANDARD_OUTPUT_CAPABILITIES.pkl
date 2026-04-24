@@ -1,0 +1,49 @@
+amends "../Register.pkl"
+
+address = 0x29
+size = 1.b
+readable = true
+writable = false
+resetValue = "Vendor Defined"
+fields {
+  ["VBusSinkDisconnectDetectIndicator"] {
+    bits = "B7"
+    name = "VBus Sink Disconnect Detect Indicator"
+    required = true
+  }
+  ["DebugAccessoryIndicator"] {
+    bits = "B6"
+    name = "Debug Accessory Indicator"
+    required = true
+  }
+  ["VBusPresentMonitor"] {
+    bits = "B5"
+    name = "VBus Present Monitor"
+    required = true
+  }
+  ["AudioAdapterAccessoryIndicator"] {
+    bits = "B4"
+    name = "Audio Adapter Accessory Indicator"
+    required = true
+  }
+  ["ActiveCableIndicator"] {
+    bits = "B3"
+    name = "Active Cable Indicator"
+    required = true
+  }
+  ["MUXConfigurationControl"] {
+    bits = "B2"
+    name = "MUX Configuration Control"
+    required = true
+  }
+  ["ConnectionPresent"] {
+    bits = "B1"
+    name = "Connection Present"
+    required = true
+  }
+  ["ConnectorOrientation"] {
+    bits = "B0"
+    name = "Connector Orientation"
+    required = true
+  }
+}

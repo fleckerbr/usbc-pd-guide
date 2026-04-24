@@ -1,0 +1,8 @@
+import "System.pkl"
+
+typealias Expression = String
+
+// MARK: Conditional Checks
+class IsEqual extends System.Condition {
+  compare: Listing<Expression|Number>
+}

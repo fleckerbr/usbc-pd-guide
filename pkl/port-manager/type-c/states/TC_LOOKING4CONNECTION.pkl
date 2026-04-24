@@ -1,0 +1,6 @@
+amends "../State.pkl"
+
+relevantAlerts {
+  "FAULT_STATUS.AllRegistersResetToDefault"
+  "POWER_STATUS.TCPCInitializationStatus"
+}

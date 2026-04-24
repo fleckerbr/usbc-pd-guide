@@ -1,0 +1,34 @@
+import "type-c/State.pkl" as TCState
+import "policy-engine/State.pkl" as PEState
+import "protocol-layer/State.pkl" as PRLState
+
+import* "type-c/states/*.pkl" as configurationChannelModules
+import* "policy-engine/states/*.pkl" as policyEngineModules
+import* "protocol-layer/states/*.pkl" as protocolLayerModules
+
+/// Get the name of a state module from its import path
+hidden getStateModuleName = (path) -> path.split("/").last.replaceLast(".pkl", "").replaceFirst("_", ".")
+
+/// Convert state modules into a list of state names and states
+hidden configurationChannelStateList: List<Pair<TCState.Name, TCState>> = configurationChannelModules.toMap().entries.map(
+  (pair) -> Pair(getStateModuleName.apply(pair.first), pair.second)
+)
+hidden policyEngineStateList: List<Pair<PEState.Name, PEState>> = policyEngineModules.toMap().entries.map(
+  (pair) -> Pair(getStateModuleName.apply(pair.first), pair.second)
+)
+hidden protocolLayerStateList: List<Pair<PRLState.Name, PRLState>> = protocolLayerModules.toMap().entries.map(
+  (pair) -> Pair(getStateModuleName.apply(pair.first), pair.second)
+)
+
+/// Generate a mapping of state names and states
+configurationChannelStates: Mapping<TCState.Name, TCState> = configurationChannelStateList.toMap((pair) -> pair.first, (pair) -> pair.second).toMapping()
+policyEngineStates: Mapping<PEState.Name, PEState> = policyEngineStateList.toMap((pair) -> pair.first, (pair) -> pair.second).toMapping()
+protocolLayerStates: Mapping<PRLState.Name, PRLState> = protocolLayerStateList.toMap((pair) -> pair.first, (pair) -> pair.second).toMapping()
+
+output {
+  renderer = new YamlRenderer {
+    converters {
+      [DataSize] = (size) -> "\(size.value).\(size.unit)"
+    }
+  }
+}

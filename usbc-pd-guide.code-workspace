@@ -1,0 +1,167 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "[json]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
+            "editor.formatOnSave": true
+        },
+        "[jsonc]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
+            "editor.formatOnSave": true
+        },
+        "[pkl]": {
+            "editor.detectIndentation": false,
+            "editor.indentSize": 2
+        },
+        "[python]": {
+            "editor.codeActionsOnSave": {
+                "source.organizeImports": "explicit"
+            },
+            "editor.defaultFormatter": "charliermarsh.ruff",
+            "editor.formatOnSave": true
+        },
+        "[yaml]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
+            "editor.formatOnSave": true,
+            "prettier.tabWidth": 2
+        },
+        "cSpell.ignoreRegExpList": [
+            "/\\b[\\w]*(?:_[\\w]*)+\\b/g",
+            "/\\b([\\w]*(?:_[\\w]*)+)\\b\\(.*\\)/g",
+            "/\\b[xA-Z0-9]+\\b/g",
+            "/@\\b[\\w]+\\b/g"
+        ],
+        "cSpell.words": [
+            "BIST",
+            "datasheet",
+            "mkdocs",
+            "Nondefault",
+            "Overcurrent",
+            "smbus",
+            "SOPDBG",
+            "TCPC",
+            "Unoriented",
+            "usbc",
+            "USBPD",
+            "vbus",
+            "vconn"
+        ],
+        "python.analysis.typeCheckingMode": "strict",
+        "python.analysis.packageIndexDepths": [
+            {
+                "name": "click",
+                "depth": 0
+            },
+            {
+                "name": "ctypes",
+                "depth": 0
+            },
+            {
+                "name": "mkdocs",
+                "depth": 3
+            },
+            {
+                "name": "rich",
+                "depth": 2
+            },
+            {
+                "name": "typer",
+                "depth": 2
+            }
+        ],
+        "terminal.integrated.env.linux": {
+            "PYTHONPATH": "${workspaceFolder}"
+        },
+        "terminal.integrated.env.osx": {
+            "PYTHONPATH": "${workspaceFolder}"
+        },
+        "terminal.integrated.env.windows": {
+            "PYTHONPATH": "${workspaceFolder}"
+        },
+        "yaml.schemas": {
+            "https://json.schemastore.org/mkdocs-1.0.json": "file:///c%3A/Users/bflecker/Documents/Documentation/usbc-pd-buide/mkdocs.yml"
+        },
+        "yaml.customTags": [
+            "!ENV scalar",
+            "!ENV sequence",
+            "!relative scalar",
+            "tag:yaml.org,2002:python/name:material.extensions.emoji.to_svg",
+            "tag:yaml.org,2002:python/name:material.extensions.emoji.twemoji",
+            "tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format"
+        ]
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "MkDocs Serve",
+                "icon": {
+                    "id": "issue-reopened",
+                    "color": "terminal.ansiWhite"
+                },
+                "type": "process",
+                "command": "uv",
+                "args": ["run", "mkdocs", "serve"],
+                "isBackground": true,
+                "problemMatcher": [
+                    {
+                        "owner": "MkDocs",
+                        "background": {
+                            "activeOnStart": true,
+                            "beginsPattern": "^.{8}-\\s+Cleaning site directory$",
+                            "endsPattern": "^.{8}-\\s+\\[\\d\\d:\\d\\d:\\d\\d\\] Serving on http[s]?://.*$"
+                        },
+                        "pattern": [
+                            {
+                                "regexp": "^([^\\\\s].*)\\\\((\\\\d+,\\\\d+)\\\\):\\\\s*(.*)$",
+                                "file": 1,
+                                "location": 2,
+                                "message": 3
+                            }
+                        ]
+                    }
+                ],
+                "presentation": {
+                    "echo": false,
+                    "clear": true,
+                    "panel": "dedicated",
+                    "reveal": "always",
+                    "showReuseMessage": true
+                }
+            },
+            {
+                "label": "MkDocs Open",
+                "icon": {
+                    "id": "book",
+                    "color": "terminal.ansiWhite"
+                },
+                "type": "process",
+                "options": {
+                    "shell": {
+                        "executable": "PowerShell.exe",
+                        "args": ["-NoLogo", "-NoProfile"]
+                    }
+                },
+                "command": "PowerShell",
+                "args": [
+                    "& {Start-Process msedge -ArgumentList ('--app=\"http://localhost:8000/usbc-pd-guide/\"')}"
+                ],
+                "presentation": {
+                    "close": true,
+                    "panel": "dedicated",
+                    "reveal": "never",
+                    "showReuseMessage": false
+                },
+                "problemMatcher": [],
+                "dependsOn": ["MkDocs Serve"]
+            }
+        ]
+    },
+    "extensions": {
+        "recommendations": ["redhat.vscode-yaml"]
+    }
+}

@@ -1,0 +1,14 @@
+amends "../Register.pkl"
+
+address = 0x80
+size = 1.b
+readable = true
+writable = true
+resetValue = "Vendor Defined"
+fields {
+  ["Reserved.B15..0"] {
+    bits = "B15..0"
+    name = "Reserved"
+    required = true
+  }
+}

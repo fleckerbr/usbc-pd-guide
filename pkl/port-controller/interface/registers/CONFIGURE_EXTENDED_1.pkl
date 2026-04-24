@@ -1,0 +1,24 @@
+amends "../Register.pkl"
+
+address = 0x2A
+size = 1.b
+readable = true
+writable = true
+resetValue = 0x00
+fields {
+  ["Reserved.B7..2"] {
+    bits = "B7..2"
+    name = "Reserved"
+    required = true
+  }
+  ["FRSwapBidirectionalPin"] {
+    bits = "B1"
+    name = "FR Swap Bidirectional Pin"
+    required = true
+  }
+  ["StandardInputSourceFRSwap"] {
+    bits = "B0"
+    name = "Standard Input Source FR Swap"
+    required = true
+  }
+}

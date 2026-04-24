@@ -1,0 +1,39 @@
+amends "../Register.pkl"
+
+address = 0x1B
+size = 1.b
+readable = true
+writable = true
+resetValue = 0x00
+fields {
+  ["Reserved.B7..5"] {
+    bits = "B7..5"
+    name = "Reserved"
+    required = true
+  }
+  ["ForceOffVBus"] {
+    bits = "B4"
+    name = "Force Off VBus"
+    required = false
+  }
+  ["VBusDischargeFaultDetectionTimer"] {
+    bits = "B3"
+    name = "VBus Discharge Fault Detection Timer"
+    required = true
+  }
+  ["InternalOrExternalOCPFault"] {
+    bits = "B2"
+    name = "VBus Over Current Protection Fault"
+    required = false
+  }
+  ["InternalOrExternalOVPFault"] {
+    bits = "B1"
+    name = "VBus Over Voltage Protection Fault"
+    required = false
+  }
+  ["VConnOverCurrentFault"] {
+    bits = "B0"
+    name = "VConn Over Current Fault"
+    required = false
+  }
+}

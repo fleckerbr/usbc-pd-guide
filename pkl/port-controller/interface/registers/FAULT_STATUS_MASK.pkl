@@ -1,0 +1,49 @@
+amends "../Register.pkl"
+
+address = 0x15
+size = 1.b
+readable = true
+writable = true
+resetValue = 0xFF
+fields {
+  ["AllRegistersResetToDefault"] {
+    bits = "B7"
+    name = "All Registers Reset To Default"
+    required = true
+  }
+  ["ForceOffVBusMask"] {
+    bits = "B6"
+    name = "Force Off VBus Interrupt Status Mask"
+    required = true
+  }
+  ["AutoDischargeFailedMask"] {
+    bits = "B5"
+    name = "Auto Discharge Failed Mask"
+    required = true
+  }
+  ["ForceDischargeFailedMask"] {
+    bits = "B4"
+    name = "Force Discharge Failed Mask"
+    required = true
+  }
+  ["InternalOrExternalOCPFaultMask"] {
+    bits = "B3"
+    name = "VBus Over Current Protection Fault Interrupt Status Mask"
+    required = true
+  }
+  ["InternalOrExternalOCVFaultMask"] {
+    bits = "B2"
+    name = "VBus Over Voltage Protection Fault Interrupt Status Mask"
+    required = true
+  }
+  ["VConnOverCurrentFaultMask"] {
+    bits = "B1"
+    name = "VConn Over Current Fault Interrupt Status Mask"
+    required = true
+  }
+  ["I2CInterfaceErrorMask"] {
+    bits = "B0"
+    name = "I2C Interface Error Interrupt Status Mask"
+    required = true
+  }
+}

@@ -1,0 +1,14 @@
+amends "../Register.pkl"
+
+address = 0x04
+size = 2.b
+readable = true
+writable = false
+resetValue = "Vendor Defined"
+fields {
+  ["bcdDevice"] {
+    bits = "B15..0"
+    name = "bcd Device"
+    required = true
+  }
+}

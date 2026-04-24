@@ -1,0 +1,19 @@
+amends "../Register.pkl"
+
+address = 0x72
+size = 2.b
+readable = true
+writable = true
+resetValue = 0x008C
+fields {
+  ["Reserved.B15..12"] {
+    bits = "B15..12"
+    name = "Reserved"
+    required = true
+  }
+  ["VoltageTripPoint"] {
+    bits = "B11..0"
+    name = "Voltage Trip Point"
+    required = true
+  }
+}

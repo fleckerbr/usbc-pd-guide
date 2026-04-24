@@ -1,0 +1,49 @@
+amends "../Register.pkl"
+
+address = 0x2F
+size = 1.b
+readable = true
+writable = true
+resetValue = 0x00
+fields {
+  ["MessageDisableDisconnect"] {
+    bits = "B7"
+    name = "Message Disable Disconnect"
+    required = true
+  }
+  ["EnableCableReset"] {
+    bits = "B6"
+    name = "Enable Cable Reset"
+    required = true
+  }
+  ["EnableHardReset"] {
+    bits = "B5"
+    name = "Enable Hard Reset"
+    required = true
+  }
+  ["EnableSOPDBG''message"] {
+    bits = "B4"
+    name = "Enable SOP_DBG'' message"
+    required = true
+  }
+  ["EnableSOPDBG'message"] {
+    bits = "B3"
+    name = "Enable SOP_DBG' message"
+    required = true
+  }
+  ["EnableSOP''message"] {
+    bits = "B2"
+    name = "Enable SOP'' message"
+    required = true
+  }
+  ["EnableSOP'message"] {
+    bits = "B1"
+    name = "Enable SOP' message"
+    required = true
+  }
+  ["EnableSOPmessage"] {
+    bits = "B0"
+    name = "Enable SOP message"
+    required = true
+  }
+}

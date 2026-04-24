@@ -1,0 +1,44 @@
+amends "../Register.pkl"
+
+address = 0x19
+size = 1.b
+readable = true
+writable = true
+resetValue = 0x00
+fields {
+  ["EnableSMBusPEC"] {
+    bits = "B7"
+    name = "Enable SMBus PEC"
+    required = true
+  }
+  ["EnableLooking4ConnectionAlert"] {
+    bits = "B6"
+    name = "Enable Looking4Connection Alert"
+    required = true
+  }
+  ["EnableWatchdogTimer"] {
+    bits = "B5"
+    name = "Enable Watchdog Timer"
+    required = true
+  }
+  ["DebugAccessoryControl"] {
+    bits = "B5"
+    name = "Debug Accessory Control"
+    required = true
+  }
+  ["I2CClockStretchingControl"] {
+    bits = "B3..2"
+    name = "I2C Clock Stretching Control"
+    required = true
+  }
+  ["BISTTestMode"] {
+    bits = "B1"
+    name = "BIST Test Mode"
+    required = true
+  }
+  ["PlugOrientation"] {
+    bits = "B0"
+    name = "Plug Orientation"
+    required = true
+  }
+}

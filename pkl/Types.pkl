@@ -1,0 +1,5 @@
+open module Types
+
+typealias BitRange = String(matches(
+  Regex(#"B\d+(?:\.\.\d+)?"#)
+))

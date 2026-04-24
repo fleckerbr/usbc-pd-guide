@@ -1,0 +1,19 @@
+amends "../Register.pkl"
+
+address = 0x16
+size = 1.b
+readable = true
+writable = true
+resetValue = 0x01
+fields {
+  ["Reserved.B7..1"] {
+    bits = "B7..1"
+    name = "Reserved"
+    required = true
+  }
+  ["vSafe0VStatusMask"] {
+    bits = "B0"
+    name = "vSafe0V Status Mask"
+    required = true
+  }
+}

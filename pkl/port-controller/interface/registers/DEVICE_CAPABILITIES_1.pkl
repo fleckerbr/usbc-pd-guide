@@ -1,0 +1,74 @@
+amends "../Register.pkl"
+
+address = 0x24
+size = 2.b
+readable = true
+writable = false
+resetValue = "Vendor Defined"
+fields {
+  ["VBusNondefaultTarget"] {
+    bits = "B15"
+    name = "VBus Nondefault Target"
+    required = true
+  }
+  ["VBusOCPReporting"] {
+    bits = "B14"
+    name = "VBus OCP Reporting"
+    required = true
+  }
+  ["VBusOVPReporting"] {
+    bits = "B13"
+    name = "VBus OVP Reporting"
+    required = true
+  }
+  ["BleedDischarge"] {
+    bits = "B12"
+    name = "Bleed Discharge"
+    required = true
+  }
+  ["ForceDischarge"] {
+    bits = "B11"
+    name = "Force Discharge"
+    required = true
+  }
+  ["VBusMeasurementAndAlarmCapable"] {
+    bits = "B10"
+    name = "VBus Measurement and Alarm Capable"
+    required = true
+  }
+  ["SourceResistorSupported"] {
+    bits = "B9..8"
+    name = "Source Resistor Supported"
+    required = true
+  }
+  ["PowerRolesSupported"] {
+    bits = "B7..5"
+    name = "Power Roles Supported"
+    required = true
+  }
+  ["SOPDBG'/SOPDBG''Support"] {
+    bits = "B4"
+    name = "SOP_DBG'/SOP_DBG'' Support"
+    required = true
+  }
+  ["SourceVCONN"] {
+    bits = "B3"
+    name = "Source VCONN"
+    required = true
+  }
+  ["SinkVBus"] {
+    bits = "B2"
+    name = "Sink VBus"
+    required = true
+  }
+  ["SourceNondefaultVBus"] {
+    bits = "B1"
+    name = "Source Nondefault VBus"
+    required = true
+  }
+  ["SourceVBus"] {
+    bits = "B0"
+    name = "Source VBus"
+    required = true
+  }
+}

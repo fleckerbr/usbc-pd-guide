@@ -1,0 +1,14 @@
+amends "../State.pkl"
+import ".../Event.pkl"
+
+entryDirective {
+  any {
+    new Event.Startup {}
+    new Event.Request {
+      request = "PE.SoftReset"
+    }
+    new Event.Notification {
+      notification = "PRL.HardResetComplete"
+    }
+  }
+}

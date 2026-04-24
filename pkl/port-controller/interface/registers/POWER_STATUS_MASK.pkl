@@ -1,0 +1,49 @@
+amends "../Register.pkl"
+
+address = 0x14
+size = 1.b
+readable = true
+writable = true
+resetValue = 0xFF
+fields {
+  ["DebugAccessoryConnectedMask"] {
+    bits = "B7"
+    name = "Debug Accessory Connected Status Mask"
+    required = true
+  }
+  ["TCPCInitializationMask"] {
+    bits = "B6"
+    name = "TCPC Initialization Status Mask"
+    required = true
+  }
+  ["SourcingNondefaultVoltageMask"] {
+    bits = "B5"
+    name = "Sourcing Nondefault Voltage Status Interrupt Mask"
+    required = true
+  }
+  ["SourcingVBusMask"] {
+    bits = "B4"
+    name = "Sourcing VBus Status Interrupt Mask"
+    required = true
+  }
+  ["VBusDetectionMask"] {
+    bits = "B3"
+    name = "VBus Detection Status Interrupt Mask"
+    required = true
+  }
+  ["VBusPresentMask"] {
+    bits = "B2"
+    name = "VBus Present Status Interrupt Mask"
+    required = true
+  }
+  ["VConnPresentMask"] {
+    bits = "B1"
+    name = "VConn Present Status Interrupt Mask"
+    required = true
+  }
+  ["SinkingVBusMask"] {
+    bits = "B0"
+    name = "Sinking VBus Status Interrupt Mask"
+    required = true
+  }
+}

@@ -1,0 +1,19 @@
+amends "../Register.pkl"
+
+address = 0x20
+size = 1.b
+readable = true
+writable = false
+resetValue = null
+fields {
+  ["Reserved.B7..1"] {
+    bits = "B7..1"
+    name = "Reserved"
+    required = true
+  }
+  ["vSafe0V"] {
+    bits = "B0"
+    name = "vSafe0V"
+    required = true
+  }
+}

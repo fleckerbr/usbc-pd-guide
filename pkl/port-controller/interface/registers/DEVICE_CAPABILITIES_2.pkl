@@ -1,0 +1,74 @@
+amends "../Register.pkl"
+
+address = 0x26
+size = 2.b
+readable = true
+writable = false
+resetValue = "Vendor Defined"
+fields {
+  ["DeviceCapabilities3Support"] {
+    bits = "B15"
+    name = "DEVICE_CAPABILITIES_3 Support"
+    required = true
+  }
+  ["MessageDisableDisconnect"] {
+    bits = "B14"
+    name = "Message Disable Disconnect"
+    required = true
+  }
+  ["GenericTimer"] {
+    bits = "B13"
+    name = "Generic Timer"
+    required = true
+  }
+  ["LongMessage"] {
+    bits = "B12"
+    name = "Long Message"
+    required = true
+  }
+  ["SMBusPEC"] {
+    bits = "B11"
+    name = "SMBus PEC"
+    required = true
+  }
+  ["SourceFRSwap"] {
+    bits = "B10"
+    name = "Source FR Swap"
+    required = true
+  }
+  ["SinkFRSwap"] {
+    bits = "B9"
+    name = "Sink FR Swap"
+    required = true
+  }
+  ["WatchdogTimer"] {
+    bits = "B8"
+    name = "Watchdog Timer"
+    required = true
+  }
+  ["SinkDisconnectDetection"] {
+    bits = "B7"
+    name = "Sink Disconnect Detection"
+    required = true
+  }
+  ["StopDischargeThreshold"] {
+    bits = "B6"
+    name = "Stop Discharge Threshold"
+    required = true
+  }
+  ["VBusVoltageAlarmLSB"] {
+    bits = "B5..4"
+    name = "VBus Voltage Alarm LSB"
+    required = true
+  }
+  ["VConnPowerSupported"] {
+    bits = "B3..1"
+    name = "VConn Power Supported"
+    required = true
+  }
+  ["VConnOvercurrentFaultCapable"] {
+    bits = "B0"
+    name = "VConn Overcurrent Fault Capable"
+    required = true
+  }
+}

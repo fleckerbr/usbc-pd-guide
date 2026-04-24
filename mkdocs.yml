@@ -1,0 +1,188 @@
+# Site information
+site_name: USB-C Power Delivery Guide
+site_url: https://fleckerbr.github.io/usbc-pd-guide
+
+# Appearance
+extra_css:
+  - stylesheets/extras.css
+theme:
+  name: material
+  features:
+    - content.tooltips
+    - content.code.annotate
+    - content.code.copy
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+
+# Extensions
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.snippets:
+      auto_append:
+        - includes/port-controller/register-hyperlinks.md
+        - includes/port-controller/standard-io-signals-hyperlinks.md
+        - includes/port-manager/connection-states-hyperlinks.md
+        - includes/abbreviations.md
+        - includes/hyperlinks.md
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tilde
+  - tables
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - toc:
+      permalink: ⚓︎
+plugins:
+  - glightbox
+  - search
+  - tags
+  - usbdoc:
+      autolinks: includes/autolinks.md
+validation:
+  links:
+    absolute_links: ignore
+watch:
+  - includes
+
+# Navigation
+nav:
+  - Introduction:
+      - index.md
+      - USB-C Architecture: architecture.md
+      - Configuration Channel: configuration-channel.md
+  - Type-C Port Manager:
+      - port-manager/index.md
+      - Configuration Channel Manager:
+          - port-manager/configuration-channel-manager/index.md
+          - State Summaries:
+              - port-manager/configuration-channel-manager/state-summaries/index.md
+              - PowerOnReset: port-manager/configuration-channel-manager/state-summaries/power-on-reset.md
+              - Looking4Connection: port-manager/configuration-channel-manager/state-summaries/looking4connection.md
+              - AttachWait.SNK: port-manager/configuration-channel-manager/state-summaries/attach-wait-snk.md
+              - Attached.SNK: port-manager/configuration-channel-manager/state-summaries/attached-snk.md
+              - AttachWait.SRC: port-manager/configuration-channel-manager/state-summaries/attach-wait-src.md
+              - Attached.SRC: port-manager/configuration-channel-manager/state-summaries/attached-src.md
+          - Base States: port-manager/configuration-channel-manager/states.md
+          - Summary: port-manager/configuration-channel-manager/summary.md
+      - Protocol Layer:
+          - port-manager/protocol-layer/index.md
+          - Messages:
+              - port-manager/protocol-layer/messages/index.md
+          - State Summaries:
+              - port-manager/protocol-layer/state-summaries/index.md
+              - Rx.WaitForPHYMessage: port-manager/protocol-layer/state-summaries/rx-wait-for-phy-message.md
+              - Rx.CheckMesasgeType: port-manager/protocol-layer/state-summaries/rx-check-message-type.md
+              - Rx.LayerResetForReceive: port-manager/protocol-layer/state-summaries/rx-layer-reset-for-receive.md
+              - Rx.CheckMessageID: port-manager/protocol-layer/state-summaries/rx-check-message-id.md
+              - Rx.StoreMessageID: port-manager/protocol-layer/state-summaries/rx-store-message-id.md
+              - Tx.PHYLayerReset: port-manager/protocol-layer/state-summaries/tx-phy-layer-reset.md
+              - Tx.DiscardMessage: port-manager/protocol-layer/state-summaries/tx-discard-message.md
+              - Tx.WaitForMessageRequest: port-manager/protocol-layer/state-summaries/tx-wait-for-message-request.md
+              - Tx.LayerResetForTransmit: port-manager/protocol-layer/state-summaries/tx-layer-reset-for-transmit.md
+              - Tx.ConstructMessage: port-manager/protocol-layer/state-summaries/tx-construct-message.md
+              - Tx.MessageDiscarded: port-manager/protocol-layer/state-summaries/tx-message-discarded.md
+              - Tx.TransmissionError: port-manager/protocol-layer/state-summaries/tx-transmission-error.md
+              - Tx.MessageSuccessful: port-manager/protocol-layer/state-summaries/tx-message-successful.md
+              - HR.ResetLayer: port-manager/protocol-layer/state-summaries/hr-reset-layer.md
+              - HR.IndicateHardReset: port-manager/protocol-layer/state-summaries/hr-indicate-hard-reset.md
+              - HR.RequestHardReset: port-manager/protocol-layer/state-summaries/hr-request-hard-reset.md
+              - HR.WaitForPHYHardResetComplete: port-manager/protocol-layer/state-summaries/hr-wait-for-phy-hard-reset-complete.md
+              - HR.PHYHardResetRequested: port-manager/protocol-layer/state-summaries/hr-phy-hard-reset-requested.md
+              - HR.WaitForPEHardResetComplete: port-manager/protocol-layer/state-summaries/hr-wait-for-pe-hard-reset-complete.md
+              - HR.PEHardResetComplete: port-manager/protocol-layer/state-summaries/hr-pe-hard-reset-complete.md
+      - Policy Engine:
+          - port-manager/policy-engine/index.md
+          - State Summaries:
+              - port-manager/policy-engine/state-summaries/index.md
+              - Startup.SRC: port-manager/policy-engine/state-summaries/startup-src.md
+              - Discovery.SRC: port-manager/policy-engine/state-summaries/discovery-src.md
+  - Type-C Port Controller:
+      - port-controller/index.md
+      - Topics:
+          - port-controller/topics/index.md
+          - Alert Handling: port-controller/topics/alert-handling.md
+          - Power Delivery Basics: port-controller/topics/power-delivery-basics.md
+      - Registers:
+          - port-controller/registers/index.md
+          - VENDOR_ID: port-controller/registers/vendor-id.md
+          - PRODUCT_ID: port-controller/registers/product-id.md
+          - DEVICE_ID: port-controller/registers/device-id.md
+          - USBTYPEC_REV: port-controller/registers/usbtypec-rev.md
+          - USBPD_REV_VER: port-controller/registers/usbpd-rev-ver.md
+          - PD_INTERFACE_REV: port-controller/registers/pd-interface-rev.md
+          - ALERT: port-controller/registers/alert.md
+          - ALERT_EXTENDED: port-controller/registers/alert-extended.md
+          - EXTENDED_STATUS: port-controller/registers/extended-status.md
+          - FAULT_STATUS: port-controller/registers/fault-status.md
+          - POWER_STATUS: port-controller/registers/power-status.md
+          - CC_STATUS: port-controller/registers/cc-status.md
+          - ALERT_MASK: port-controller/registers/alert-mask.md
+          - ALERT_EXTENDED_MASK: port-controller/registers/alert-extended-mask.md
+          - EXTENDED_STATUS_MASK: port-controller/registers/extended-status-mask.md
+          - FAULT_STATUS_MASK: port-controller/registers/fault-status-mask.md
+          - POWER_STATUS_MASK: port-controller/registers/power-status-mask.md
+          - TCPC_CONTROL: port-controller/registers/tcpc-control.md
+          - ROLE_CONTROL: port-controller/registers/role-control.md
+          - FAULT_CONTROL: port-controller/registers/fault-control.md
+          - POWER_CONTROL: port-controller/registers/power-control.md
+          - CONFIGURE_STANDARD_OUTPUT: port-controller/registers/configure-standard-output.md
+          - CONFIGURE_EXTENDED_1: port-controller/registers/configure-extended-1.md
+          - COMMAND: port-controller/registers/command.md
+          - DEVICE_CAPABILITIES_1: port-controller/registers/device-capabilities-1.md
+          - DEVICE_CAPABILITIES_2: port-controller/registers/device-capabilities-2.md
+          - DEVICE_CAPABILITIES_3: port-controller/registers/device-capabilities-3.md
+          - STANDARD_INPUT_CAPABILITIES: port-controller/registers/standard-input-capabilities.md
+          - STANDARD_OUTPUT_CAPABILITIES: port-controller/registers/standard-output-capabilities.md
+          - GENERIC_TIMER: port-controller/registers/generic-timer.md
+          - RECEIVE_DETECT: port-controller/registers/receive-detect.md
+          - RECEIVE_BUFFER: port-controller/registers/receive-buffer.md
+          - MESSAGE_HEADER_INFO: port-controller/registers/message-header-info.md
+          - TRANSMIT: port-controller/registers/transmit.md
+          - TRANSMIT_BUFFER: port-controller/registers/transmit-buffer.md
+          - VBUS_VOLTAGE: port-controller/registers/vbus-voltage.md
+          - VBUS_NONDEFAULT_TARGET: port-controller/registers/vbus-nondefault-target.md
+          - VBUS_SINK_DISCONNECT_THRESHOLD: port-controller/registers/vbus-sink-disconnect-threshold.md
+          - VBUS_STOP_DISCHARGE_THRESHOLD: port-controller/registers/vbus-stop-discharge-threshold.md
+          - VBUS_VOLTAGE_ALARM_HI_CFG: port-controller/registers/vbus-voltage-alarm-hi-cfg.md
+          - VBUS_VOLTAGE_ALARM_LO_CFG: port-controller/registers/vbus-voltage-alarm-lo-cfg.md
+          - VENDOR_DEFINED: port-controller/registers/vendor-defined.md
+      - Standard IO Signals:
+          - port-controller/standard-io-signals/index.md
+          - STANDARD_INPUT_SIGNALS: port-controller/standard-io-signals/standard-input-signals.md
+          - STANDARD_OUTPUT_SIGNALS: port-controller/standard-io-signals/standard-output-signals.md

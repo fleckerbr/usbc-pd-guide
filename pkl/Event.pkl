@@ -1,0 +1,19 @@
+import "System.pkl"
+
+// MARK: System Events
+
+/// Notification vs Request
+///   A notification simply indicates that an event has occured and consumers of a notification should register
+///   handlers to perform some action when the notification is emitted. By comparison, a request is targeted
+///   and has a pre-designated action that it expects to occur once the request is processed. As a result, a
+///   request handler shall respond to a request with any relevant information such as if the request was accepted,
+///   rejected, postponed, etc.
+class Notification extends System.Event {
+  notification: String
+}
+
+class Request extends System.Event {
+  request: String
+}
+
+class Startup extends System.Event {}

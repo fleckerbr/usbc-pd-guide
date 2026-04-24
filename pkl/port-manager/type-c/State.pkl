@@ -1,0 +1,24 @@
+import ".../port-controller/PortController.pkl"
+
+// MARK: Types
+typealias Name = String
+
+// MARK: Properties
+relevantAlerts: Listing<String>(validAlerts) = new {}
+
+alertList = PortController.alerts.toList().toMap(
+  (alert) -> if (alert.getClass().toString() == "String") alert else alert.keys.first,
+  (alert) -> (
+    if (alert.getClass().toString() == "String") relevantAlerts.toList().contains(alert)
+    else alert.values.flatten().toMap(
+      (nestedAlert) -> nestedAlert,
+      (nestedAlert) -> relevantAlerts.toList().contains(nestedAlert)
+    ).toMapping()
+  )
+).toMapping()
+
+hidden validAlerts = (alerts) -> (
+  if (alerts.toList().any((alert) -> !PortController.flatAlerts.toList().contains(alert))) (
+    throw("Invalid alert identifier in relevantAlerts: \(alerts)")
+  ) else true
+)

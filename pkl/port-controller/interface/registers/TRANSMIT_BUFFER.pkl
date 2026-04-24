@@ -1,0 +1,31 @@
+amends "../Register.pkl"
+
+address = 0x51
+registers {
+  ["I2C_WRITE_BYTE_COUNT"] {
+    size = 1.b
+    readable = false
+    writable = true
+    resetValue = 0x00
+    fields {
+      ["I2CWriteByteCount"] {
+        bits = "B7..0"
+        name = "I2C Write Byte Count"
+        required = true
+      }
+    }
+  }
+  ["TX_BUF_BYTE_x"] {
+    size = 1.b
+    readable = false
+    writable = true
+    resetValue = 0x00
+    fields {
+      ["Value"] {
+        bits = "B7..0"
+        name = "Value"
+        required = true
+      }
+    }
+  }
+}

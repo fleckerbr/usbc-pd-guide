@@ -1,0 +1,79 @@
+amends "../Register.pkl"
+
+address = 0x23
+size = 1.b
+readable = false
+writable = true
+resetValue = 0x00
+fields {
+  ["WakeI2C"] {
+    bits = "B7..0"
+    name = "Wake I2C"
+    required = true
+  }
+  ["DisableVBusDetect"] {
+    bits = "B7..0"
+    name = "Disable VBus Detect"
+    required = true
+  }
+  ["EnableVBusDetect"] {
+    bits = "B7..0"
+    name = "Enable VBus Detect"
+    required = true
+  }
+  ["DisableSinkVBus"] {
+    bits = "B7..0"
+    name = "Disable Sink VBus"
+    required = true
+  }
+  ["SinkVBus"] {
+    bits = "B7..0"
+    name = "Sink VBus"
+    required = true
+  }
+  ["DisableSourceVBus"] {
+    bits = "B7..0"
+    name = "Disable Source VBus"
+    required = true
+  }
+  ["SourceVBusDefaultVoltage"] {
+    bits = "B7..0"
+    name = "Source VBus Default Voltage"
+    required = true
+  }
+  ["SourceVBusNondefaultVoltage"] {
+    bits = "B7..0"
+    name = "Source VBus Nondefault Voltage"
+    required = true
+  }
+  ["Look4Connection"] {
+    bits = "B7..0"
+    name = "Look4Connection"
+    required = true
+  }
+  ["RxOneMore"] {
+    bits = "B7..0"
+    name = "Receive One More"
+    required = true
+  }
+  ["SendFRSwapSignal"] {
+    bits = "B7..0"
+    name = "Send FR Swap Signal"
+    required = true
+  }
+  ["ResetTransmitBuffer"] {
+    bits = "B7..0"
+    name = "Reset Transmit Buffer"
+    required = true
+  }
+  ["ResetReceiveBuffer"] {
+    bits = "B7..0"
+    name = "Reset Receive Buffer"
+    required = true
+  }
+  ["I2CIdle"] {
+    bits = "B7..0"
+    name = "I2C Idle"
+    required = true
+  }
+}

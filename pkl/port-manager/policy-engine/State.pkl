@@ -1,0 +1,4 @@
+// MARK: Types
+typealias Name = String
+
+// MARK: Properties

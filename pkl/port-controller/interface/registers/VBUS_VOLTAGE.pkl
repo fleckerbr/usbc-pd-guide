@@ -1,0 +1,24 @@
+amends "../Register.pkl"
+
+address = 0x70
+size = 2.b
+readable = true
+writable = false
+resetValue = 0x0000
+fields {
+  ["Reserved.B15..12"] {
+    bits = "B15..12"
+    name = "Reserved"
+    required = true
+  }
+  ["ScaleFactor"] {
+    bits = "B11..10"
+    name = "Scale Factor"
+    required = true
+  }
+  ["VBusVoltageMeasurement"] {
+    bits = "B9..0"
+    name = "VBus Voltage Measurement"
+    required = true
+  }
+}

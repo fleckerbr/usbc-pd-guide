@@ -1,0 +1,39 @@
+// MARK: System Classes
+abstract class Condition {
+  condition: String = this.getClass().toString().split("#").last
+}
+
+abstract class Event {
+  event: String = this.getClass().toString().split("#").last
+}
+
+class If {
+  hidden all: Listing<If|Condition|Event>(defineAll)?
+
+  hidden any: Listing<If|Condition|Event>(defineAny)?
+
+  `if-all` = all
+  `if-any` = any
+
+  hidden defineAll = (it) -> (
+    if (any != null) (
+      throw("Cannot define 'all' when 'any' is already defined")
+    )
+    else if ((it?.length ?? 0) < 2) (
+      throw("Cannot define 'all' option with less than 2 elements")
+    )
+    else if (!it.isDistinct) (
+      throw("Elements of 'all' must be distinct")
+    )
+    else true
+  )
+  hidden defineAny = (it) -> (
+    if (all != null) (
+      throw("Cannot define 'any' when 'all is already defined")
+    )
+    else if (!it.isDistinct) (
+      throw("Elements of 'any' must be distinct")
+    )
+    else true
+  )
+}

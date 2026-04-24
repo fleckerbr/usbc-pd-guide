@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "usbc-pd"
+version = "0.1.0"
+description = "USB PD Documentation Generator"
+readme = "README.md"
+authors = [{ name = "Bryton Flecker", email = "contact@bryton.recelf.me" }]
+requires-python = ">=3.12"
+dependencies = ["cyclopts>=3.1.2", "pyyaml>=6.0.2", "typing-extensions>=4.15.0"]
+
+[project.scripts]
+usbgen = "usb.main:run"
+
+[project.entry-points."mkdocs.plugins"]
+usbdoc = "usbdoc:USBDocPlugin"
+
+[dependency-groups]
+dev = ["mkdocs-glightbox>=0.5.2", "mkdocs-material>=9.5.47"]
+
+[tool.hatch.build.targets.wheel]
+only-include = ["src"]
+packages = ["src/usb"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+required-imports = ["from __future__ import annotations"]
+split-on-trailing-comma = false

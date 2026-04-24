@@ -1,0 +1,19 @@
+amends "../Register.pkl"
+
+address = 0x06
+size = 2.b
+readable = true
+writable = false
+resetValue = "Vendor Defined"
+fields {
+  ["Reserved.B15..8"] {
+    bits = "B15..8"
+    name = "Reserved"
+    required = true
+  }
+  ["bcdUSBTypeCRelease"] {
+    bits = "B7..0"
+    name = "bcd USB Type-C Release"
+    required = true
+  }
+}

@@ -1,0 +1,44 @@
+amends "../Register.pkl"
+
+address = 0x18
+size = 1.b
+readable = true
+writable = true
+resetValue = 0x60
+fields {
+  ["HighImpedanceOutputs"] {
+    bits = "B7"
+    name = "High Impedance Outputs"
+    required = false
+  }
+  ["DebugAccessoryConnected#"] {
+    bits = "B6"
+    name = "Debug Accessory Connected#"
+    required = false
+  }
+  ["AudioAccessoryConnected#"] {
+    bits = "B5"
+    name = "Audio Accessory Connected#"
+    required = false
+  }
+  ["ActiveCableConnected"] {
+    bits = "B4"
+    name = "Active Cable Connected"
+    required = false
+  }
+  ["MUXControl"] {
+    bits = "B3..2"
+    name = "MUX Control"
+    required = false
+  }
+  ["ConnectionPresent"] {
+    bits = "B1"
+    name = "Connection Present"
+    required = false
+  }
+  ["ConnectorOrientation"] {
+    bits = "B0"
+    name = "Connector Orientation"
+    required = false
+  }
+}

@@ -1,0 +1,14 @@
+amends "../Register.pkl"
+
+address = 0x2C
+size = 2.b
+readable = false
+writable = true
+resetValue = 0x0000
+fields {
+  ["GenericTimer"] {
+    bits = "B15..0"
+    name = "Generic Timer"
+    required = true
+  }
+}

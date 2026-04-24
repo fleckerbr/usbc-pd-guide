@@ -1,0 +1,29 @@
+amends "../Register.pkl"
+
+address = 0x50
+size = 1.b
+readable = true
+writable = true
+resetValue = 0x00
+fields {
+  ["Reserved.B7..6"] {
+    bits = "B7..6"
+    name = "Reserved"
+    required = true
+  }
+  ["RetryCounter"] {
+    bits = "B5..4"
+    name = "Retry Counter"
+    required = true
+  }
+  ["Reserved.B3"] {
+    bits = "B3"
+    name = "Reserved"
+    required = true
+  }
+  ["TransmitSOP*Message"] {
+    bits = "B2..0"
+    name = "Transmit SOP* Message"
+    required = true
+  }
+}

@@ -1,0 +1,89 @@
+amends "../Register.pkl"
+
+address = 0x12
+size = 2.b
+readable = true
+writable = true
+resetValue = 0x7FFF
+fields {
+  ["VendorDefinedAlertMask"] {
+    bits = "B15"
+    name = "Vendor Defined Alert Mask"
+    required = true
+  }
+  ["AlertExtendedMask"] {
+    bits = "B14"
+    name = "Alert Extended Mask"
+    required = true
+  }
+  ["ExtendedStatusMask"] {
+    bits = "B13"
+    name = "Extended Status Mask"
+    required = true
+  }
+  ["RxBeginningStatusMask"] {
+    bits = "B12"
+    name = "Beginning SOP* Message Status Mask"
+    required = true
+  }
+  ["VBusSinkDisconnectDetectedMask"] {
+    bits = "B11"
+    name = "VBus Sink Disconnect Detected Mask"
+    required = true
+  }
+  ["RxBufferOverflowMask"] {
+    bits = "B10"
+    name = "Receive Buffer Overflow Mask"
+    required = true
+  }
+  ["FaultMask"] {
+    bits = "B9"
+    name = "Fault Mask"
+    required = true
+  }
+  ["VBusVoltageAlarmLowMask"] {
+    bits = "B8"
+    name = "VBus Voltage Alarm Low Mask"
+    required = true
+  }
+  ["VBusVoltageAlarmHighMask"] {
+    bits = "B7"
+    name = "VBus Voltage Alarm High Mask"
+    required = true
+  }
+  ["TxMessageSuccessfulMask"] {
+    bits = "B6"
+    name = "Transmit SOP* Message Successful Mask"
+    required = true
+  }
+  ["TxMessageDiscardedMask"] {
+    bits = "B5"
+    name = "Transmit SOP* Message Discarded Mask"
+    required = true
+  }
+  ["TxMessageFailedMask"] {
+    bits = "B4"
+    name = "Transmit SOP* Message Failed Mask"
+    required = true
+  }
+  ["HardResetMask"] {
+    bits = "B3"
+    name = "Received Hard Reset Mask"
+    required = true
+  }
+  ["RxStatusMask"] {
+    bits = "B2"
+    name = "Received SOP* Message Status Mask"
+    required = true
+  }
+  ["PowerStatusMask"] {
+    bits = "B1"
+    name = "Power Status Mask"
+    required = true
+  }
+  ["CCStatusMask"] {
+    bits = "B0"
+    name = "CC Status Mask"
+    required = true
+  }
+}

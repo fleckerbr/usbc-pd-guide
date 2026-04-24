@@ -1,0 +1,72 @@
+import "interface/Register.pkl"
+
+import* "interface/registers/*.pkl" as registerModules
+
+/// Convert register modules into a list of register names and registers
+hidden registerList: List<Pair<Register.Name, Register>> = registerModules.toMap().entries.sortWith(
+  // Sort registers by address in ascending order
+  (pair1, pair2) -> pair1.second.address < pair2.second.address
+).map(
+  // Use map to extract the register name from the module path
+  (pair) -> Pair(pair.first.split("/").last.replaceLast(".pkl", ""), pair.second)
+)
+
+/// Mapping between alert field bits and their corresponding nested alert registers
+local nestedAlerts: Mapping<Register.FieldID, Register.Name> = new Mapping {
+  ["B14"] = "ALERT_EXTENDED"
+  ["B13"] = "EXTENDED_STATUS"
+  ["B9"] = "FAULT_STATUS"
+  ["B1"] = "POWER_STATUS"
+}
+
+/// Generate a mapping of register names and registers
+registers: Mapping<Register.Name, Register> = registerList.toMap((pair) -> pair.first, (pair) -> pair.second).toMapping()
+
+/// Extract a hierarchical list of alerts and nested alerts from the registers
+alerts = new Listing {
+  for (alertID, alert in registers["ALERT"].fields) {
+    if (nestedAlerts.containsKey(alert.bits)) (
+      Map("ALERT.\(alertID)", new Listing {
+        for (nestedAlertID, nestedAlert in registers[nestedAlerts[alert.bits]].fields) {
+          // Only add field to listing if it is not reserved
+          when (!nestedAlertID.contains("Reserved")) { "\(nestedAlerts[alert.bits]).\(nestedAlertID)" }
+        }
+      })
+    )
+    else "ALERT.\(alertID)"
+  }
+}
+
+/// Extract a flattened list of alerts and nested alerts from the registers
+hidden flatAlerts = new Listing {
+  for (alertID, alert in registers["ALERT"].fields) {
+    "ALERT.\(alertID)"
+  }
+  for (nestedAlert in nestedAlerts.toMap().values) {
+    for (alertID, alert in registers[nestedAlert].fields) {
+      "\(nestedAlert).\(alertID)"
+    }
+  }
+}
+
+output {
+  renderer = new YamlRenderer {
+    converters {
+      ["^registers[*]"] = (register) -> new RenderDirective {
+        // Dispatch to specialized Register output renderer 
+        text = ("\n" + Register.output.renderer.renderDocument(register).trim()).replaceAll("\n", "\n    ")
+      }
+      [DataSize] = (size) -> "\(size.value).\(size.unit)"
+      [Listing] = (listing) -> new RenderDirective {
+        text = (
+          new Listing {
+            "" // First line should be blank so that the first entry is on a new line
+            for (entry in listing) {
+              (renderer.renderValue(entry)).replaceAll("\n", "\n    ")
+            }
+          }
+        ).join("\n  - ") // Add two extra spaces of indentation before every list entry
+      }
+    }
+  }
+}

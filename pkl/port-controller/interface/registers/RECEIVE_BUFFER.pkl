@@ -1,0 +1,49 @@
+amends "../Register.pkl"
+
+address = 0x30
+registers {
+  ["READABLE_BYTE_COUNT"] {
+    size = 1.b
+    readable = true
+    writable = false
+    resetValue = 0x00
+    fields {
+      ["ReadableByteCount"] {
+        bits = "B7..0"
+        name = "Readable Byte Count"
+        required = true
+      }
+    }
+  }
+  ["RX_BUF_FRAME_TYPE"] {
+    size = 1.b
+    readable = true
+    writable = false
+    resetValue = 0x00
+    fields {
+      ["Reserved.B7..3"] {
+        bits = "B7..3"
+        name = "Reserved"
+        required = true
+      }
+      ["RxMessage"] {
+        bits = "B2..0"
+        name = "Received SOP* Message"
+        required = true
+      }
+    }
+  }
+  ["RX_BUF_BYTE_x"] {
+    size = 1.b
+    readable = true
+    writable = false
+    resetValue = 0x00
+    fields {
+      ["Value"] {
+        bits = "B7..0"
+        name = "Value"
+        required = true
+      }
+    }
+  }
+}

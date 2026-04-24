@@ -1,0 +1,49 @@
+amends "../Register.pkl"
+
+address = 0x1E
+size = 1.b
+readable = true
+writable = false
+resetValue = null
+fields {
+  ["DebugAccessoryConnected"] {
+    bits = "B7"
+    name = "Debug Accessory Connected"
+    required = false
+  }
+  ["TCPCInitializationStatus"] {
+    bits = "B6"
+    name = "TCPC Initialization Status"
+    required = true
+  }
+  ["SourcingNondefaultVoltage"] {
+    bits = "B5"
+    name = "Sourcing Nondefault Voltage"
+    required = false
+  }
+  ["SourcingVBus"] {
+    bits = "B4"
+    name = "Sourcing VBus"
+    required = true
+  }
+  ["VBusDetectionEnabled"] {
+    bits = "B3"
+    name = "VBus Detection Enabled"
+    required = true
+  }
+  ["VBusPresent"] {
+    bits = "B2"
+    name = "VBus Present"
+    required = true
+  }
+  ["VConnPresent"] {
+    bits = "B1"
+    name = "VConn Present"
+    required = true
+  }
+  ["SinkingVBus"] {
+    bits = "B0"
+    name = "Sinking VBus"
+    required = true
+  }
+}

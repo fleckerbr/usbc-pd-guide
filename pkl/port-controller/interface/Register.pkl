@@ -1,0 +1,89 @@
+import ".../Types.pkl"
+
+// MARK: Types
+typealias FieldID = String
+typealias Name = String
+typealias VendorDefinedReset = "Vendor Defined"
+
+class Field {
+  bits: Types.BitRange
+  name: String
+  required: Boolean
+}
+
+class SubRegister {
+  size: DataSize(this >= 1.b, this <= 2.b)
+  readable: Boolean
+  writable: Boolean
+  resetValue: UInt | VendorDefinedReset | Null
+  fields: Mapping<FieldID, Field>
+}
+
+// MARK: Properties
+address: UInt
+size: DataSize(this >= 1.b, this <= 2.b)?
+readable: Boolean?
+writable: Boolean?
+resetValue: UInt | VendorDefinedReset | Null = null
+fields: Mapping<FieldID, Field>?
+registers: Mapping<Name, SubRegister>?
+
+// MARK: Renderer
+local jsonRenderer = new JsonRenderer {}
+
+hidden fieldYamlRenderer = new YamlRenderer {
+  converters {
+    [Field] = (field) -> field.toMap().mapValues((key, value) ->
+      if (key == "bits" || key == "name") new RenderDirective {
+        // Render string value with forced quotation marks
+        text = " \(jsonRenderer.renderValue(value))"
+      }
+      else value
+    )
+  }
+}
+
+output {
+  renderer = new YamlRenderer {
+    converters {
+      ["^"] = (register) -> register.toMap().mapValues((key, value) ->
+        if (key == "address") new RenderDirective {
+          // Render address as hexadecimal padded to one byte (e.g. 5 -> 0x05)
+          text = " 0x\(register.address.toRadixString(16).toUpperCase().padStart(2, "0"))"
+        }
+        else if (key == "fields" && value != null) new RenderDirective {
+          text = new Listing {
+            "" // First line should be blank so that the first key is on a new line
+            for (fieldID, field in register.fields.toMap()) {
+              (
+                fieldID.toString() + ":\n" +
+                fieldYamlRenderer.renderValue(field)
+              ).replaceAll("\n", "\n    ") // Spacing for Field properties
+            }
+          }.join("\n  ") // Spacing for FieldID key
+        }
+        else if (key == "resetValue" && value != null) new RenderDirective { 
+          text = if (value == "Vendor Defined") (
+            " \"Vendor Defined\"" 
+          )
+          else ( // The only remaining option should be a 1 or 2-byte reset value
+            " 0x" + register.resetValue.toRadixString(16).toUpperCase().padStart(register.size.value*2, "0")
+          )
+        }
+        else if (key == "registers" && value != null) new RenderDirective {
+          text = new Listing {
+            "" // First line should be blank so that the first key is on a new line
+            for (registerName, subRegister in register.registers.toMap()) {
+              (
+                registerName.toString() + ":\n" +
+                renderer.renderValue(subRegister)
+              ).replaceAll("\n", "\n    ") // Spacing for SubRegister properties
+            }
+          }.join("\n  ") // Spacing for RegisterName key
+        }
+        else value
+      )
+      [DataSize] = (size) -> "\(size.value).\(size.unit)"
+    }
+  }
+}

@@ -1,0 +1,89 @@
+amends "../Register.pkl"
+
+address = 0x10
+size = 2.b
+readable = true
+writable = true
+resetValue = 0x0000
+fields {
+  ["VendorDefinedAlert"] {
+    bits = "B15"
+    name = "Vendor Defined Alert"
+    required = true
+  }
+  ["AlertExtended"] {
+    bits = "B14"
+    name = "Alert Extended"
+    required = true
+  }
+  ["ExtendedStatus"] {
+    bits = "B13"
+    name = "Extended Status"
+    required = true
+  }
+  ["RxBeginningStatus"] {
+    bits = "B12"
+    name = "Beginning SOP* Message Status"
+    required = true
+  }
+  ["VBusSinkDisconnectDetected"] {
+    bits = "B11"
+    name = "VBus Sink Disconnect Detected"
+    required = true
+  }
+  ["RxBufferOverflow"] {
+    bits = "B10"
+    name = "Receive Buffer Overflow"
+    required = true
+  }
+  ["Fault"] {
+    bits = "B9"
+    name = "Fault"
+    required = true
+  }
+  ["VBusVoltageAlarmLo"] {
+    bits = "B8"
+    name = "VBus Voltage Alarm Low"
+    required = true
+  }
+  ["VBusVoltageAlarmHi"] {
+    bits = "B7"
+    name = "VBus Voltage Alarm High"
+    required = true
+  }
+  ["TxMessageSuccessful"] {
+    bits = "B6"
+    name = "Transmit SOP* Message Successful"
+    required = true
+  }
+  ["TxMessageDiscarded"] {
+    bits = "B5"
+    name = "Transmit SOP* Message Discarded"
+    required = true
+  }
+  ["TxMessageFailed"] {
+    bits = "B4"
+    name = "Transmit SOP* Message Failed"
+    required = true
+  }
+  ["HardReset"] {
+    bits = "B3"
+    name = "Received Hard Reset"
+    required = true
+  }
+  ["RxStatus"] {
+    bits = "B2"
+    name = "Received SOP* Message Status"
+    required = true
+  }
+  ["PowerStatus"] {
+    bits = "B1"
+    name = "Power Status"
+    required = true
+  }
+  ["CCStatus"] {
+    bits = "B0"
+    name = "CC Status"
+    required = true
+  }
+}

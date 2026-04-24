@@ -1,0 +1,49 @@
+amends "../Register.pkl"
+
+address = 0x1C
+size = 1.b
+readable = true
+writable = true
+resetValue = 0x60
+fields {
+  ["FastRoleSwapEnable"] {
+    bits = "B7"
+    name = "Fast Role Swap Enable"
+    required = true
+  }
+  ["VBusVoltageMonitor"] {
+    bits = "B6"
+    name = "VBUS_VOLTAGE Monitor"
+    required = true
+  }
+  ["DisableVoltageAlarms"] {
+    bits = "B5"
+    name = "Disable Voltage Alarms"
+    required = true
+  }
+  ["AutoDischargeDisconnect"] {
+    bits = "B4"
+    name = "Auto Discharge Disconnect"
+    required = true
+  }
+  ["EnableBleedDischarge"] {
+    bits = "B3"
+    name = "Enable Bleed Discharge"
+    required = true
+  }
+  ["ForceDischarge"] {
+    bits = "B2"
+    name = "Force Discharge"
+    required = true
+  }
+  ["VConnPowerSupported"] {
+    bits = "B1"
+    name = "VConn Power Supported"
+    required = true
+  }
+  ["EnableVConn"] {
+    bits = "B0"
+    name = "Enable VConn"
+    required = true
+  }
+}

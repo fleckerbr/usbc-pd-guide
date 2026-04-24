@@ -1,0 +1,14 @@
+amends "../Register.pkl"
+
+address = 0x00
+size = 2.b
+readable = true
+writable = false
+resetValue = "Vendor Defined"
+fields {
+  ["VID"] {
+    bits = "B15..0"
+    name = "Vendor ID"
+    required = true
+  }
+}

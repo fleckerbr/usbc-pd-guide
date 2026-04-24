@@ -1,0 +1,49 @@
+amends "../Register.pkl"
+
+address = 0x1F
+size = 1.b
+readable = true
+writable = true
+resetValue = 0x80
+fields {
+  ["AllRegistersResetToDefault"] {
+    bits = "B7"
+    name = "All Registers Reset To Default"
+    required = true
+  }
+  ["ForceOffVBus"] {
+    bits = "B6"
+    name = "Force Off VBus"
+    required = true
+  }
+  ["AutoDischargeFailed"] {
+    bits = "B5"
+    name = "Auto Discharge Failed"
+    required = true
+  }
+  ["ForceDischargeFailed"] {
+    bits = "B4"
+    name = "Force Discharge Failed"
+    required = true
+  }
+  ["InternalOrExternalOCP"] {
+    bits = "B3"
+    name = "VBus Over Current Protection Fault"
+    required = true
+  }
+  ["InternalOrExternalOVP"] {
+    bits = "B2"
+    name = "VBus Over Voltage Protection Fault"
+    required = true
+  }
+  ["VConnOverCurrentFault"] {
+    bits = "B1"
+    name = "VConn Over Current Fault"
+    required = true
+  }
+  ["I2CInterfaceError"] {
+    bits = "B0"
+    name = "I2C Interface Error"
+    required = true
+  }
+}

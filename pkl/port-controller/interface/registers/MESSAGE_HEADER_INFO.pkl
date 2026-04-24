@@ -1,0 +1,34 @@
+amends "../Register.pkl"
+
+address = 0x2E
+size = 1.b
+readable = true
+writable = true
+resetValue = "Vendor Defined"
+fields {
+  ["Reserved.B7..5"] {
+    bits = "B7..5"
+    name = "Reserved"
+    required = true
+  }
+  ["CablePlug"] {
+    bits = "B4"
+    name = "Cable Plug"
+    required = true
+  }
+  ["DataRole"] {
+    bits = "B3"
+    name = "Data Role"
+    required = true
+  }
+  ["USBPDSpecificationRevision"] {
+    bits = "B2..1"
+    name = "USB PD Specification Revision"
+    required = true
+  }
+  ["PowerRole"] {
+    bits = "B0"
+    name = "Power Role"
+    required = true
+  }
+}

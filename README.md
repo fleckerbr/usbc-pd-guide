@@ -1,2 +1,1 @@
-# implementing-usbc
-A guide to implementing USB-C
+# USB Power Delivery Guide
